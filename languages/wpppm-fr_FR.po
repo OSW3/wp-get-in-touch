@@ -1,0 +1,74 @@
+# Translation of Plugins - OSW3 Base Plugins in French (France)
+msgid ""
+msgstr ""
+"Project-Id-Version: OSW3 Plugins\n"
+"PO-Revision-Date: 2017-12-01 02:07+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"Language-Team: http://osw3.net\n"
+"Language: fr\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"X-Generator: Poedit 2.0.4\n"
+
+#: Plugin version number
+msgid "Version"
+msgstr "Version"
+
+#: Plugin info link
+msgid "more info"
+msgstr "plus d'info"
+
+#: Plugin settings link
+msgid "Settings"
+msgstr "Réglages"
+
+#: Global message : Errors
+msgid "The form contains errors."
+msgstr "Le formulaire contient des erreurs."
+
+#: Global message : Update success
+msgid "The form has been updated successfully."
+msgstr "Le formulaire a été mis à jour avec succès."
+
+#: Global message : Save with errors
+msgid "The form has been saved with errors."
+msgstr "Le formulaire a été enregistré avec des erreurs."
+
+#: Global message : Save Success
+msgid "The form has been saved successfully."
+msgstr "Le formulaire a été enregistré avec succès."
+
+#: Field message : Invalide
+msgid "This field is not valid."
+msgstr "Ce champ n'est pas valide."
+
+#: Field message : Required
+msgid "This field is required."
+msgstr "Ce champ est requis."
+
+#: Field message : Email Syntax
+msgid "This field is not a valid email address."
+msgstr "Ce champ n'est pas une adresse e-mail valide."
+
+#: Field message : URL Syntax
+msgid "This field is not a valid URL."
+msgstr "Ce champ n'est pas une URL valide."
+
+#: Field message : File oversized
+msgid "File is over size."
+msgstr "Le fichier est trop grand."
+
+#: Field message : File nor allowed
+msgid "File type is not allowed."
+msgstr "Le type de fichier n'est pas autorisé."
+
+#: Custom Post Taxonomy : Categories
+msgid "Categories"
+msgstr "Catégories"
+
+#: Custom Post Taxonomy : Tags
+msgid "Tags"
+msgstr "Étiquettes"

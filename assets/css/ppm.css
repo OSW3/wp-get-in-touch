@@ -1,0 +1,110 @@
+.wpppm {
+    margin-bottom: 20px;
+}
+.wpppm > label {
+    font-weight: bold;
+    display: block;
+    cursor: default;
+    margin-bottom: 10px;
+}
+
+.wpppm input[type=text],
+.wpppm input[type=email],
+.wpppm input[type=url],
+.wpppm input[type=number],
+.wpppm input[type=date],
+.wpppm input[type=time],
+.wpppm input[type=tel],
+.wpppm select,
+.wpppm textarea
+{
+    padding: 10px;
+    width: 100%;
+}
+.wpppm input[type=text],
+.wpppm input[type=email],
+.wpppm input[type=url],
+.wpppm input[type=number],
+.wpppm input[type=date],
+.wpppm input[type=time],
+.wpppm input[type=tel],
+.wpppm textarea
+{
+    height: auto !important;
+}
+
+.wpppm textarea
+{
+    min-height: 128px;
+}
+
+.wpppm .has-error
+{
+    color: #ff0000;
+    font-weight: 600;
+}
+.wpppm input[type=text].has-error,
+.wpppm input[type=email].has-error,
+.wpppm input[type=url].has-error,
+.wpppm input[type=number].has-error,
+.wpppm input[type=date].has-error,
+.wpppm input[type=time].has-error,
+.wpppm input[type=tel].has-error,
+.wpppm select.has-error,
+.wpppm textarea.has-error
+{
+    border-color: #ff0000;
+}
+
+
+
+.bx-wrapper
+{
+    width: 100px !important;
+    background: transparent !important;
+
+    box-shadow: none !important;
+    border: 0px !important;
+    margin: 0 !important;
+}
+.bx-wrapper .bx-prev,
+.bx-wrapper .bx-next
+{
+    background: none !important;
+    border: 0px !important;
+    width: 50% !important;
+    height: 100% !important;
+    top: 0 !important;
+    margin: 0 !important;
+    bottom: 0 !important;
+}
+.bx-wrapper .bx-prev
+{
+    left: 0 !important;
+}
+.bx-wrapper .bx-next
+{
+    right: 0 !important;
+}
+.bx-wrapper .bx-prev:hover,
+.bx-wrapper .bx-next:hover
+{
+    background: rgba(255,255,255,.2) !important;
+}
+.bx-wrapper .bx-prev:focus,
+.bx-wrapper .bx-next:focus
+{
+    box-shadow: none !important;
+}
+
+.bx-wrapper .bx-caption
+{
+    bottom: -100px !important;
+
+    -webkit-transition: width .2s;
+    transition: width .2s;
+}
+.bx-wrapper:hover .bx-caption
+{
+    bottom: 0 !important;
+}

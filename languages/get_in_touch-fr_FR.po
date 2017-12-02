@@ -1,0 +1,82 @@
+# Translation of Plugins - Get In Touch in French (France)
+msgid ""
+msgstr ""
+"Project-Id-Version: Get In Touch\n"
+"PO-Revision-Date: 2017-12-01 02:07+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"Language-Team: http://osw3.net\n"
+"Language: fr\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"X-Generator: Poedit 2.0.4\n"
+
+#: Settings Schema, Section 1 (Notification) : Title
+msgid "Notifications"
+msgstr "Notifications"
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""
+
+#: 
+msgid ""
+msgstr ""

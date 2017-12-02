@@ -1,0 +1,144 @@
+{
+
+    "_options": {
+        "option_name": "Option value"
+    },
+
+    "register": {
+
+        "settings": {
+
+            "menus": {
+                "admin": true,
+                "action": true,
+                "icon": "image:ppm.png"
+            },
+
+            "schema": [{
+                "title": "Notifications",
+                "description": "__ Définir la liste des personnes qui recevront une notification à chaque message envoyés depuis votre site.",
+                "schema": [{
+                    "key": "notification_subject",
+                    "label": "__ Notification subject",
+                    "type": "text",
+                    "helper": "__ define the subject of the email noficiation.",
+                    "default": "__ New message from [[blogname]]"
+                },{
+                    "key": "notification_body",
+                    "label": "__ Formater le corps de la notification",
+                    "type": "textarea",
+                    "default": "Message de : [[name]]\nReçu le : [[datetime]]\n-----\nMessage :\n[[message]]\n-----\nEmail : [[email]]\nTéléphone : [[phone]]"
+                },{
+                    "key": "notification_to",
+                    "label": "__ Liste des destinataires des notifications de nouveau message",
+                    "type": "textarea",
+                    "default": "[[admin_email]]"
+                }]
+            }
+            ,
+            {
+                "title": "__ Réponse expéditeur",
+                "description": "__ Envoyer une réponse automatique à l'expéditeur.",
+                "schema": [{
+                    "key": "send_copy",
+                    "label": "__ Activer l'envois de la réponse",
+                    "type": "checkbox",
+                    "default": "off"
+                },{
+                    "key": "copy_subject",
+                    "label": "__ Copy subject",
+                    "type": "text",
+                    "default": "Votre message envoyé depuis [[blogname]]"
+                },{
+                    "key": "demo_email",
+                    "label": "__ Formater le corps de la réponse",
+                    "type": "textarea",
+                    "default": "Merci pour votre message envoyé depuis notre site [[blogname]].\n\nNous traitons votre demande dans les plus bref délais."
+                }]
+            }]
+        },
+
+        "posts": [{
+            "type": "get_in_touch",
+            "label": "Messages",
+            "menu_icon": "dashicons-email",
+            "_capabilities": {
+                "create_posts": "do_not_allow"
+            },
+            "map_meta_cap": true,
+            
+            "_supports": ["title", "editor"],
+            "show_admin_permalink": false,
+
+
+            "labels": {
+                "all_items": "__ All messages",
+                "not_found": "__ No message"
+            },
+
+            "category": {
+                "labels": {
+                    "name": "Categories"
+                },
+                "_show_admin_column": true
+            },
+            
+            "admin_columns": [{
+                "label": "__ Email address",
+                "data": "email",
+                "sortable": true
+            },{
+                "key": "date",
+                "public": true
+            },{
+                "key": "title",
+                "public": true
+            }],
+            "_remove_admin_row_actions": true,
+            "remove_admin_row_actions": ["view", "quick-edit", "edit"],
+            
+            "metas": [{
+                "title": "__ Sender",
+                "schema": [{
+                    "key": "name",
+                    "label": "__ Nom de l'expéditeur",
+                    "type": "text",
+                    "placeholder": "__ Prénom / Nom *.",
+                    "required": true,
+                    "disabled": true,
+                    "_shortcode": false
+                },{
+                    "key": "email",
+                    "label": "Adresse e-mail",
+                    "type": "text",
+                    "placeholder": "__ Adresse e-mail *",
+                    "required": true,
+                    "disabled": true
+                },{
+                    "key": "phone",
+                    "label": "Numéro de téléphone",
+                    "type": "text",
+                    "placeholder": "__ Téléphone *.",
+                    "required": true,
+                    "disabled": true
+                }]
+            },{
+                "title": "__ Message",
+                "schema": [{
+                    "key": "message",
+                    "label": "__ Message",
+                    "type": "textarea",
+                    "placeholder": "__ Message *",
+                    "required": true,
+                    "disabled": true
+                }]
+            }]
+        }]
+
+    },
+    
+    "hooks": {
+        "WPPPM_SessionStart": "template_redirect",
+        "GetInTouch_Submission": "template_redirect"
+    }
+}

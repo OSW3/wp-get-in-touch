@@ -1,0 +1,1 @@
+// alert("Hello, i'm a front script");

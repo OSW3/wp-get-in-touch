@@ -7,3 +7,26 @@ if ( !function_exists( 'add_action' ) )
 	echo "If you looking for more about me, you can read at http://osw3.net/wordpress/plugins/please-plug-me/";
     exit;
 }
+
+if (!function_exists('GetInTouch_GetNewMessages'))
+{
+    function GetInTouch_GetNewMessages()
+    {
+        return new WP_Query([
+            'post_type' => 'get_in_touch',
+
+            'meta_query' => [
+                'relation' => 'OR',
+                [
+                    'key' => 'isRead',
+                    'value' => '1',
+                    'compare' => '!='
+                ],
+                [
+                    'key' => 'isRead',
+                    'compare' => 'NOT EXISTS'
+                ]
+            ]
+        ]);
+    }
+}

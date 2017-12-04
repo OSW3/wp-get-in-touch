@@ -8,11 +8,6 @@ if ( !function_exists( 'add_action' ) )
 	exit;
 }
 
-if (!defined('WPPPM_TEXTDOMAIN'))
-{
-    define('WPPPM_TEXTDOMAIN', 'wpppm');
-}
-
 // Files required
 require_once(__DIR__.'/ppm.php');
 
@@ -36,14 +31,9 @@ add_action( 'init', function(){
 if (!class_exists(PPM::getClassname()))
 {eval(sprintf('class %1$s extends PPM 
 {
-    // private static $initialized = false;
     public function start()
     {
-        // if (!self::$initialized ) 
-        // {
-        //     self::$initialized = true;
-            $this->init();
-        // }
+        $this->init();
     }
     public function activate()
     {

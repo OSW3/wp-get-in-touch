@@ -1,5 +1,11 @@
 <?php
 
+if (!defined('WPPPM_TEXTDOMAIN'))
+{
+    define('WPPPM_TEXTDOMAIN', 'wpppm');
+}
+
+
 if (!class_exists('PPM'))
 {
     abstract class PPM
@@ -42,9 +48,12 @@ if (!class_exists('PPM'))
         private $options = [];
         private $register;
         private $schemas;
+        private $schemasFields;
         private $settings;
         private $posts;
         private $plugin_uri;
+        private $widgets;
+        private $currentScreen;
         
         /**
          * Constructor
@@ -66,6 +75,7 @@ if (!class_exists('PPM'))
             $this->setRegisterSettings();
             
             $this->setSchemas();
+            $this->setSchemasFields();
             $this->setImagesSizes();
             $this->setHooks();
             $this->setMenus();
@@ -77,6 +87,7 @@ if (!class_exists('PPM'))
             $this->setPrefixTable();
             $this->setShortcodes();
             $this->setVersion();
+            $this->setWidgets();
             $this->setDescription();
 
             // echo "<pre>";
@@ -123,6 +134,7 @@ if (!class_exists('PPM'))
 
             $this->load_functions();
 
+
             // -- Init registers
 
             $params = array(
@@ -135,11 +147,18 @@ if (!class_exists('PPM'))
                 'PPM_RegisterPosts',
                 $params
             );
-
+            
             // Init Settings register
             PPM::include_class(
                 $this->getPath().'ppm/register/settings.php', 
                 'PPM_RegisterSettings',
+                $params
+            );
+            
+            // Init Widgets register
+            PPM::include_class(
+                $this->getPath().'ppm/register/widgets.php', 
+                'PPM_RegisterWidgets',
                 $params
             );
         }
@@ -243,7 +262,9 @@ if (!class_exists('PPM'))
                 "Options"               => $this->getOptions(),
                 "Registers"             => $this->getRegistersWithoutSchemas(),
                 "Schemas"               => $this->getSchemas(),
+                "SchemasFields"         => $this->getSchemasFields(),
                 "ImagesSizes"           => $this->getImagesSizes(),
+                "Widgets"               => $this->getWidgets(),
 
                 "AssetsStyles"          => $this->getAssetsStyles(),
                 "AssetsScripts"         => $this->getAssetsScripts(),
@@ -665,6 +686,70 @@ if (!class_exists('PPM'))
         {
             return $this->schemas;
         }
+
+
+        /**
+         * Retrieve Fields Only for each Schemas
+         */
+        private function setSchemasFields()
+        {
+            $schemas = $this->getSchemas();
+            $fields = [];
+
+            // Fields for settings
+            if (isset($schemas->Settings))
+            {
+                foreach ($schemas->Settings as $section)
+                {
+                    if (isset($section['schema']))
+                    {
+                        if (!isset($fields['Settings']))
+                        {
+                            $fields['Settings'] = [];
+                        }
+
+                        foreach ($section['schema'] as $field)
+                        {
+                            array_push($fields['Settings'], $field);
+                        }
+                    }
+                }
+            }
+
+            // Fields for Custom Posts
+            if (isset($schemas->CustomPosts))
+            {
+                foreach ($schemas->CustomPosts as $type => $customPost)
+                {
+                    foreach ($customPost as $section)
+                    {
+                        if (isset($section['schema']))
+                        {
+                            if (!isset($fields['CustomPosts']))
+                            {
+                                $fields['CustomPosts'] = [];
+                            }
+                            if (!isset($fields['CustomPosts'][$type]))
+                            {
+                                $fields['CustomPosts'][$type] = [];
+                            }
+
+                            foreach ($section['schema'] as $field)
+                            {
+                                array_push($fields['CustomPosts'][$type], $field);
+                            }
+                        }
+                    }
+                }
+            }
+
+            $this->schemasFields = (object) $fields;
+
+        }
+        private function getSchemasFields()
+        {
+            return $this->schemasFields;
+        }
         
 
         /**
@@ -717,6 +802,121 @@ if (!class_exists('PPM'))
         public function getVersion()
         {
             return $this->version;
+        }
+        
+
+        /**
+         * Set Plugin Widgets
+         */
+        private function setWidgets()
+        {
+            $widgets = [];
+
+            // Retrieve widgets
+            if (isset($this->register->widgets))
+            {
+                foreach ($this->register->widgets as $key => $widget)
+                {
+                    $widget_label = $widget['label'];
+                    $widget_view = null;
+
+                    if (isset($widget['view']))
+                    {
+                        $widget_view = $widget['view'];
+                    }
+
+                    array_push($widgets, array(
+                        "label" => $widget_label,
+                        "view" => $widget_view
+                    ));
+                }
+            }
+
+            // Retrieve widgets of posts
+            foreach ($this->posts as $post)
+            {
+                if (isset($post['widget']))
+                {
+                    $widget_label = null;
+                    $widget_view = null;
+
+                    if (isset($post['widget']['label']))
+                    {
+                        $widget_label = $post['widget']['label'];
+                    }
+                    else if (isset($post['label']))
+                    {
+                        $widget_label = $post['label'];
+                    }
+
+                    if (isset($post['widget']['view']))
+                    {
+                        $widget_view = $post['widget']['view'];
+                    }
+
+                    array_push($widgets, array(
+                        "label" => $widget_label,
+                        "view" => $widget_view
+                    ));
+                }
+            }
+
+            // Rebuild widgets list
+            foreach ($widgets as $key => $widget)
+            {
+                // Widget ID
+                if (!isset($widget['ID']))
+                {
+                    $widget['ID'] = $this->getPrefix()."widget_".$key;
+                }
+
+                // Widget label
+                if (!isset($widget['label']))
+                {
+                    $widget['label'] = $this->getName();
+                }
+                
+                // Widget Callback
+                // if (!isset($widget['callback']))
+                // {
+                //     $callback_fn = "widget_callback_";
+                //     $callback_fn.= $this->getNamespace();
+                //     $callback_fn.= "_".$key;
+                //     $widget['callback'] = $callback_fn;
+                // }
+                
+                // Widget View
+                if (!isset($widget['view']) || empty($widget['view']))
+                {
+                    $widget['view'] = $widget['ID'];
+                }
+                
+                // Widget Callback Control
+                if (!isset($widget['control']))
+                {
+                    $widget['control'] = null;
+                }
+                
+                // Widget Callback Args
+                if (!isset($widget['args']))
+                {
+                    $widget['args'] = [];
+                }
+
+                $widget['args']['view'] = $widget['view'];
+
+                $widgets[$key] = (object) $widget;
+            }
+
+            $this->widgets = (object) $widgets;
+        }
+        /**
+         * Get Plugin Widgets
+         * @return (object)
+         */
+        public function getWidgets()
+        {
+            return $this->widgets;
         }
         
 
@@ -845,7 +1045,7 @@ if (!class_exists('PPM'))
         }
         
         // Utils ///////////////////////////////////////////////////////////////
-        
+
         /**
          * Include Classe, its dependencies & instantiate
          * @param (string) $file

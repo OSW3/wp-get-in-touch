@@ -28,7 +28,7 @@ if (!class_exists('PPM_RegisterSettings'))
                                 function () {
                                     add_menu_page( 
                                         $this->config->Name, 
-                                        $this->config->Name, 
+                                        __($this->config->Name, $this->config->Namespace),
                                         'manage_options', 
                                         $this->config->Namespace, 
                                         array($this, 'settings_builder'),
@@ -58,7 +58,7 @@ if (!class_exists('PPM_RegisterSettings'))
                                 function () {
                                     add_options_page( 
                                         $this->config->Name, 
-                                        $this->config->Name,
+                                        __($this->config->Name, $this->config->Namespace),
                                         'manage_options', 
                                         $this->config->Namespace,
                                         array($this, 'settings_builder')
@@ -92,7 +92,7 @@ if (!class_exists('PPM_RegisterSettings'))
             $schema = $this->schema();
             $params = $this->config->Registers->Settings;
 
-            $settings_view_file = $this->config->Path."views/settings.php";
+            $settings_view_file = $this->config->Path."views/settings/index.php";
             $generate_view = true;
             
             // Page settings from a view file

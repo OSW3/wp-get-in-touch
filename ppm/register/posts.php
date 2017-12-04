@@ -126,6 +126,7 @@ if (!class_exists('PPM_RegisterPosts'))
                 {
                     $post->label = $this->config->Name;
                 }
+                $post->label = __($post->label, $this->config->Namespace);
                 
                 // Menu position
                 if (isset($post->menu_position))
@@ -293,7 +294,6 @@ if (!class_exists('PPM_RegisterPosts'))
                 
                 
                 // Labels
-                // TODO: Add translation
                 // TODO: Value can be false to remove links
                 if (isset($post->labels) && is_array($post->labels))
                 {
@@ -316,6 +316,10 @@ if (!class_exists('PPM_RegisterPosts'))
                         if (empty($post->labels[$label_key]))
                         {
                             unset($post->labels[$label_key]);
+                        }
+                        else
+                        {
+                            $post->labels[$label_key] = __($post->labels[$label_key], $this->config->Namespace);
                         }
                     }
                 }
@@ -396,12 +400,6 @@ if (!class_exists('PPM_RegisterPosts'))
 
                 // Add Post Type to the Wordpress Register
                 register_post_type( $post->type, (array) $post );
-
-
-
-
-
-
 
 
                 // Retrieve current page post_type
@@ -682,8 +680,7 @@ if (!class_exists('PPM_RegisterPosts'))
                             $column->key = PPM::slugify($column->label);
                         }
     
-                        // TODO: Internationalisation (labe)
-                        $columns[ $column->key ] = $column->label;
+                        $columns[ $column->key ] = __($column->label, $this->config->Namespace);
                     }
 
                     if (isset($column->key))

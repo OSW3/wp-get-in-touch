@@ -73,7 +73,7 @@ if (!class_exists('PPM_RegisterMetaboxes'))
             $add_novalidate = true;
             $show_admin_permalink = true;
 
-            $metabox_view_file = $this->config->Path."views/metabox.".$type.".php";
+            $metabox_view_file = $this->config->Path."views/metaboxes/".$type.".php";
             $generate_view = true;
 
             // Metabox form a view file
@@ -85,9 +85,12 @@ if (!class_exists('PPM_RegisterMetaboxes'))
                     {
                         if (file_exists($metabox_view_file))
                         {
+
+                            // print_r( $this->config->Namespace );
+
                             add_meta_box(
                                 "metabox_".$type, 
-                                $post['label'], 
+                                __($post['label'], $this->config->Namespace), 
                                 [$this, 'metabox_view'], 
                                 $type,
                                 'normal', 
@@ -180,7 +183,7 @@ if (!class_exists('PPM_RegisterMetaboxes'))
          */
         public function metabox_view( $wp_post, $args )
         {
-            $metabox_view_file = $this->config->Path."views/metabox.".$this->type.".php";
+            $metabox_view_file = $this->config->Path."views/metaboxes/".$this->type.".php";
             include_once $metabox_view_file;
         }
 

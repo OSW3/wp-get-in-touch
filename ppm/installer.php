@@ -115,6 +115,7 @@ if (!class_exists('PPM_Installer'))
         /**
          * Add TextDomain
          * add the plugin translations files
+         * The language directory (wp-content/languages/plugins/) must be writtable
          */
         private function add_textdomain ()
         {

@@ -75,6 +75,7 @@ if (!function_exists('GetInTouch_Submission'))
                     update_post_meta( $post_id, "email", $responses['email']->value );
                     update_post_meta( $post_id, "phone", $responses['phone']->value );
                     update_post_meta( $post_id, "message", $responses['message']->value );
+                    update_post_meta( $post_id, "isRead", "0" );
 
                 }
                 else

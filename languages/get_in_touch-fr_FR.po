@@ -11,72 +11,60 @@ msgstr ""
 "Language: fr\n"
 "POT-Creation-Date: \n"
 "Last-Translator: \n"
-"X-Generator: Poedit 2.0.4\n"
 
-#: Settings Schema, Section 1 (Notification) : Title
+
+#: Menu Label / Title
+msgid "Messages"
+msgstr "Messages"
+
+#: Menu Label / Title (Singular)
+msgid "Message"
+msgstr "Message"
+
+#: Submenu : All messages
+msgid "All messages"
+msgstr "Tous les messages"
+
+
+
+#: Settings : Section 1 (Notification) : Title
 msgid "Notifications"
 msgstr "Notifications"
 
-#: 
-msgid ""
-msgstr ""
+#: Settings : Section 1 (Notification) : Description
+msgid "Define the list of people who will receive a notification to each message sent from your website."
+msgstr "Définir la liste des personnes qui recevront une notification à chaque message envoyés depuis votre site."
 
-#: 
-msgid ""
-msgstr ""
 
-#: 
-msgid ""
-msgstr ""
 
-#: 
-msgid ""
-msgstr ""
+#: Settings : Section 1 (Notification) : Subject label
+msgid "Notification subject"
+msgstr "Titre de la notification"
 
-#: 
-msgid ""
-msgstr ""
+#: Settings : Section 1 (Notification) : Subject helper
+msgid "Define the subject of the notification email."
+msgstr "Définir l'objet de l'e-mail de notification."
 
-#: 
-msgid ""
-msgstr ""
+#: Settings : Section 1 (Notification) : Subject default
+msgid "New message from [[blogname]]"
+msgstr "Nouveau message de [[blogname]]"
 
-#: 
-msgid ""
-msgstr ""
 
-#: 
-msgid ""
-msgstr ""
 
-#: 
-msgid ""
-msgstr ""
+#: Settings : Section 1 (Notification) : Body label
+msgid "Notification body"
+msgstr "Corps de la notification"
 
-#: 
-msgid ""
-msgstr ""
+#: Settings : Section 1 (Notification) : Subject helper
+msgid "Format the body of the notification."
+msgstr "Formater le corps de la notification."
 
-#: 
-msgid ""
-msgstr ""
 
-#: 
-msgid ""
-msgstr ""
 
-#: 
-msgid ""
-msgstr ""
+#: Settings : Section 1 (Notification) : Body label
+msgid "Recipients of notifications"
+msgstr "Destinataires des notifications"
 
-#: 
-msgid ""
-msgstr ""
-
-#: 
-msgid ""
-msgstr ""
-
-#: 
-msgid ""
-msgstr ""
+#: Settings : Section 1 (Notification) : Subject helper
+msgid "List of recipients of new message notifications."
+msgstr "Liste des destinataires des notifications de nouveau message."

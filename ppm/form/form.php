@@ -355,7 +355,11 @@ if (!class_exists('PPM_FormType'))
                 ? $this->attributes->maxlength 
                 : null;
             
-            $attribute = 'maxlength="'.$value.'"';
+            $attribute = null;
+            if (null !== $value)
+            {
+                $attribute = 'maxlength="'.$value.'"';
+            }
             
             $this->maxlength = (object) [
                 "value" => $value,

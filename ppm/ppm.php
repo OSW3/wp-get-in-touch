@@ -91,7 +91,7 @@ if (!class_exists('PPM'))
             $this->setDescription();
 
             // echo "<pre>";
-            // print_r( $this->getConfig()->Namespace );
+            // print_r( $this->getConfig()->Shortcodes );
             // echo "</pre>";
         }
         
@@ -178,10 +178,10 @@ if (!class_exists('PPM'))
             // Parse config from jSon file
             if (file_exists($config_json))
             {
-                $config_json = file_get_contents($config_json);
-                $config_json = json_decode($config_json, true);
-
-                $config = array_merge( $config, $config_json );
+                $config = array_merge(
+                    $config, 
+                    $this->json( $config_json, true )
+                );
             }
             else if (file_exists($config_php))
             {
@@ -326,23 +326,10 @@ if (!class_exists('PPM'))
             // Get ImagesSizes for the Settings Register
             if (isset($settings->thumbnails) && is_array($settings->thumbnails) && !empty($settings->thumbnails))
             {
-                $thumbnails = (object) $settings->thumbnails;
-
                 if (!isset( $imagesSizes['Settings'] )) $imagesSizes['Settings'] = [];
-
-                if (isset($thumbnails->sizes))
-                {
-                    $imagesSizes['Settings']['strict'] = isset($thumbnails->strict) ? $thumbnails->strict : false;
-                    $imagesSizes['Settings']['preserve_wp_sizes'] = isset($thumbnails->preserve_wp_sizes) ? $thumbnails->preserve_wp_sizes : true;
-                    $imagesSizes['Settings']['sizes'] = $this->checkImagesSizes($thumbnails->sizes);
-                }
-                else
-                {
-                    $imagesSizes['Settings']['strict'] = false;
-                    $imagesSizes['Settings']['preserve_wp_sizes'] = true;
-                    $imagesSizes['Settings']['sizes'] = $this->checkImagesSizes($thumbnails);
-                }
+                $imagesSizes['Settings'] = $this->parseImagesSizes( $settings->thumbnails );
             }
+
             
             // Get ImagesSizes for the Custom posts Register
             foreach ($posts as $post)
@@ -351,23 +338,9 @@ if (!class_exists('PPM'))
 
                 if (isset($post->thumbnails) && is_array($post->thumbnails) && !empty($post->thumbnails))
                 {
-                    $thumbnails = (object) $post->thumbnails;
-
                     if (!isset( $imagesSizes['CustomPosts'] )) $imagesSizes['CustomPosts'] = [];
                     if (!isset( $imagesSizes['CustomPosts'][$post->type] )) $imagesSizes['CustomPosts'][$post->type] = [];
-
-                    if (isset($thumbnails->sizes))
-                    {
-                        $imagesSizes['CustomPosts'][$post->type]['strict'] = isset($thumbnails->strict) ? $thumbnails->strict : false;
-                        $imagesSizes['CustomPosts'][$post->type]['preserve_wp_sizes'] = isset($thumbnails->preserve_wp_sizes) ? $thumbnails->preserve_wp_sizes : true;
-                        $imagesSizes['CustomPosts'][$post->type]['sizes'] = $this->checkImagesSizes($thumbnails->sizes);
-                    }
-                    else
-                    {
-                        $imagesSizes['CustomPosts'][$post->type]['strict'] = false;
-                        $imagesSizes['CustomPosts'][$post->type]['preserve_wp_sizes'] = true;
-                        $imagesSizes['CustomPosts'][$post->type]['sizes'] = $this->checkImagesSizes($thumbnails);
-                    }
+                    $imagesSizes['CustomPosts'][$post->type] = $this->parseImagesSizes( $post->thumbnails );
                 }
             }
 
@@ -382,10 +355,12 @@ if (!class_exists('PPM'))
             {
                 foreach ($imagesSizes['CustomPosts'] as $CustomPosts)
                 {
-                    $filters = array_merge($filters, $CustomPosts['sizes']);
+                    if (is_array($CustomPosts['sizes']))
+                    {
+                        $filters = array_merge($filters, $CustomPosts['sizes']);
+                    }
                 }
             }
-
 
             // Add images Sizes to wp register
             foreach ($filters as $filter)
@@ -400,35 +375,64 @@ if (!class_exists('PPM'))
             
             $this->imagesSizes = (object) $imagesSizes;
         }
-        /**
-         * Check Image Sizes
-         */
-        private function checkImagesSizes( $sizes )
+        private function parseImagesSizes( $input )
         {
-            foreach ($sizes as $key => $data)
+            // Default output
+            $output = array(
+                "strict" => false,
+                "preserve_wp_sizes" => true,
+                "sizes" => array(),
+            );
+
+            // Override the Strict parameter
+            if (isset($input['strict']) && is_bool($input['strict']))
+            {
+                $output['strict'] = $input['strict'];
+            }
+
+            // Override the Preserve WP Sizes parameter
+            if (isset($input['preserve_wp_sizes']) && is_bool($input['preserve_wp_sizes']))
+            {
+                $output['preserve_wp_sizes'] = $input['preserve_wp_sizes'];
+            }
+
+            // Override the Sizes parameter
+            if (isset($input['sizes']) && is_array($input['sizes']))
+            {
+                $output['sizes'] = $input['sizes'];
+            }
+            else if (is_array($input))
+            {
+                $output['sizes'] = $input;
+            }
+
+            // Checking Sizes data
+            foreach ($output['sizes'] as $key => $size)
             {
                 if (
-                    (isset($data['name']) && is_string($data['name'])) &&
-                    (isset($data['width']) && is_integer($data['width'])) &&
-                    (isset($data['height']) && is_integer($data['height']))
+                    (!isset($size['name']) || !is_string($size['name'])) ||
+                    (!isset($size['width']) || !is_integer($size['width'])) ||
+                    (!isset($size['height']) || !is_integer($size['height']))
                 )
                 {
-                    $crop = false;
+                    unset($output['sizes'][$key]);
+                    continue;
+                }
 
-                    if (isset($data['crop']) && (is_bool($data['crop']) || is_array($data['crop'])))
-                    {
-                        $crop = $data['crop'];
-                    }
+                $output['sizes'][$key] = array(
+                    "name" => $size['name'],
+                    "width" => $size['width'],
+                    "height" => $size['height'],
+                    "crop" => false
+                );
 
-                    $sizes[$key] = [
-                        "name" => $data['name'],
-                        "width" => $data['width'],
-                        "height" => $data['height'],
-                        "crop" => $crop
-                    ];
+                if (isset($size['crop']) && (is_bool($size['crop']) || is_array($size['crop'])))
+                {
+                    $output['sizes'][$key]['crop'] = $size['crop'];
                 }
             }
-            return $sizes;
+
+            return $output;
         }
         /**
          * Get Plugin ImagesSizes
@@ -467,9 +471,15 @@ if (!class_exists('PPM'))
          */
         private function setNamespace()
         {
-            $this->namespace = isset($this->config->namespace) 
-                ? self::slugify($this->config->namespace, "_")
-                : self::slugify($this->getName(), "_");
+            $this->namespace = self::slugify($this->getName(), "_");
+
+            if (isset($this->config->namespace) )
+            {
+                if (!empty($this->config->namespace) )
+                {
+                    $this->namespace = self::slugify($this->config->namespace, "_");
+                }
+            }
         }
         /**
          * Get Plugin NameSpace
@@ -662,9 +672,9 @@ if (!class_exists('PPM'))
 
             // Build Settings schema
             $schemas->Settings = [];
-            if (isset($settings->schema) && !empty($settings->schema))
+            if (isset($settings->sections) && !empty($settings->sections))
             {
-                foreach ($settings->schema as $section_key => $section_data)
+                foreach ($settings->sections as $section_key => $section_data)
                 {
                     if (isset($section_data['schema']) && !empty($section_data['schema']))
                     {
@@ -810,105 +820,108 @@ if (!class_exists('PPM'))
          */
         private function setWidgets()
         {
+            $register = $this->register;
+            $posts = $this->posts;
             $widgets = [];
 
-            // Retrieve widgets
-            if (isset($this->register->widgets))
+            // Get Widgets from the register
+            if (isset($register->widgets) && is_array($register->widgets))
             {
-                foreach ($this->register->widgets as $key => $widget)
+                foreach ($register->widgets as $widget)
                 {
-                    $widget_label = $widget['label'];
-                    $widget_view = null;
-
-                    if (isset($widget['view']))
+                    if (!empty($widget))
                     {
-                        $widget_view = $widget['view'];
+                        $widget['type'] = null;
+                        array_push($widgets, $this->parseWidgets($widget));
                     }
-
-                    array_push($widgets, array(
-                        "label" => $widget_label,
-                        "view" => $widget_view
-                    ));
                 }
             }
 
-            // Retrieve widgets of posts
-            foreach ($this->posts as $post)
+            // Get Widgets from custom post
+            foreach ($posts as $post)
             {
-                if (isset($post['widget']))
+                $post = (object) $post;
+
+                if (isset($post->widget))
                 {
-                    $widget_label = null;
-                    $widget_view = null;
-
-                    if (isset($post['widget']['label']))
-                    {
-                        $widget_label = $post['widget']['label'];
-                    }
-                    else if (isset($post['label']))
-                    {
-                        $widget_label = $post['label'];
-                    }
-
-                    if (isset($post['widget']['view']))
-                    {
-                        $widget_view = $post['widget']['view'];
-                    }
-
-                    array_push($widgets, array(
-                        "label" => $widget_label,
-                        "view" => $widget_view
-                    ));
+                    array_push($widgets, $this->parseWidgets($post->widget, $post));
                 }
             }
-
-            // Rebuild widgets list
-            foreach ($widgets as $key => $widget)
-            {
-                // Widget ID
-                if (!isset($widget['ID']))
-                {
-                    $widget['ID'] = $this->getPrefix()."widget_".$key;
-                }
-
-                // Widget label
-                if (!isset($widget['label']))
-                {
-                    $widget['label'] = $this->getName();
-                }
-                
-                // Widget Callback
-                // if (!isset($widget['callback']))
-                // {
-                //     $callback_fn = "widget_callback_";
-                //     $callback_fn.= $this->getNamespace();
-                //     $callback_fn.= "_".$key;
-                //     $widget['callback'] = $callback_fn;
-                // }
-                
-                // Widget View
-                if (!isset($widget['view']) || empty($widget['view']))
-                {
-                    $widget['view'] = $widget['ID'];
-                }
-                
-                // Widget Callback Control
-                if (!isset($widget['control']))
-                {
-                    $widget['control'] = null;
-                }
-                
-                // Widget Callback Args
-                if (!isset($widget['args']))
-                {
-                    $widget['args'] = [];
-                }
-
-                $widget['args']['view'] = $widget['view'];
-
-                $widgets[$key] = (object) $widget;
-            }
-
+            
             $this->widgets = (object) $widgets;
+        }
+        private function parseWidgets( $input, $params=null )
+        {
+            $supported_types = ["comments", "list", "quick-add", "view"];
+            static $serial = 1;
+
+            // Default output
+            $output = array(
+                "ID"        => $this->getPrefix()."widget_".$serial,
+                "label"     => $this->getName(),
+                "type"      => "view",
+                "view"      => null,
+                "control"   => null,
+                "args"      => []
+            );
+
+
+            // -- Override the Widget Label
+            if (isset($input['label']) && !empty($input['label']))
+            {
+                $output['label'] = $input['label'];
+            }
+
+
+            // -- Overide the type
+            if (isset($input['type']) && in_array($input['type'], $supported_types))
+            {
+                $output['type'] = $input['type'];
+            }
+
+
+            // -- Define the view file
+            if ('view' === $output['type'])
+            {
+                if (isset($input['view']) && !empty($input['view'])) //&& 'view' === $output['type']
+                {
+                    $output['view'] = $input['view'];
+                }
+                else
+                {
+                    $output['view'] = $output['ID'];
+                }
+            }
+
+
+            // -- Override the widget Control
+
+            
+            // -- Override the widget Args
+
+            // View
+            $args_ID = $output['ID'];
+
+            // View
+            $args_view = $output['view'];
+
+            // PostType
+            $args_posttype = null;
+
+            if (isset($params->type))
+            {
+                $args_posttype = $params->type;
+            }
+
+            $output['args'] = array_merge($output['args'], [
+                "widget_ID" => $args_ID,
+                "widget_view" => $args_view,
+                "posttype" => $args_posttype
+            ]);
+
+
+            $serial++;
+            return (object) $output;
         }
         /**
          * Get Plugin Widgets
@@ -1037,7 +1050,6 @@ if (!class_exists('PPM'))
         }
         private function getRegistersWithoutSchemas()
         {
-
             return (object) array(
                 "Settings" => (object) $this->getSettings(),
                 "CustomPosts" => (object) $this->getCustomPosts()
@@ -1174,11 +1186,11 @@ if (!class_exists('PPM'))
                 require_once($functions_path."shortcodes.php");
 
                 // Shortcodes injections
-                foreach ($this->getShortcodes() as $shortcode => $function)
+                foreach ($this->getShortcodes() as $name => $function)
                 {
                     if ( function_exists($function) )
                     {
-                        add_shortcode($shortcode, $function);
+                        add_shortcode($name, $function);
                     }
                 }
             }
@@ -1262,6 +1274,58 @@ if (!class_exists('PPM'))
             }
 
             return $array;
+        }
+
+        /**
+         * Read a json file (with comment), sanitize it and return an stdClass
+         * or an Array
+         *
+         * @param [string] $src
+         * @param boolean $assoc
+         * @return void
+         */
+        public function json($src, $assoc=false)
+        {
+            $lines = file($src);
+            
+            foreach ($lines as $key => $line)
+            {
+                $lines[$key] = preg_replace("/((!\/\/).*)?(\/\/.*)/", "$1", $line);
+
+                if (empty(trim($lines[$key])))
+                {
+                    unset($lines[$key]);
+                }
+            }
+            
+            return json_decode(
+                implode("\n", $lines), 
+                $assoc
+            );
+        }
+
+        /**
+         * All images sizes list
+         *
+         * @return array
+         */
+        public static function all_image_sizes()
+        {
+            global $_wp_additional_image_sizes;
+            $wp_sizes = get_intermediate_image_sizes();
+            $$sizes = [];
+            
+            foreach ( $wp_sizes as $size ) {
+                $$sizes[ $size ][ 'width' ] = intval( get_option( "{$size}_size_w" ) );
+                $$sizes[ $size ][ 'height' ] = intval( get_option( "{$size}_size_h" ) );
+                $$sizes[ $size ][ 'crop' ] = get_option( "{$size}_crop" ) ? get_option( "{$size}_crop" ) : false;
+            }
+        
+            if ( isset( $_wp_additional_image_sizes ) && count( $_wp_additional_image_sizes ) ) {
+                $$sizes = array_merge( $$sizes, $_wp_additional_image_sizes );
+            }
+
+            return $$sizes;
         }
         
         // Assets //////////////////////////////////////////////////////////////
@@ -1350,34 +1414,38 @@ if (!class_exists('PPM'))
                     {
                         foreach ($section['schema'] as $field) 
                         {
+                            $error_messages = array(
+                                "required"  => __("This field is required.", WPPPM_TEXTDOMAIN),
+                                "email"     => __("This field is not a valid email address.", WPPPM_TEXTDOMAIN),
+                                "url"       => __("This field is not a valid url.", WPPPM_TEXTDOMAIN),
+                                "rule"      => __("This field is not valid.", WPPPM_TEXTDOMAIN)
+                            );
+
                             // Default field settings
-                            $field['allowed_types'] = isset($field['allowed_types']) ? $field['allowed_types'] : null;
-                            $field['class']         = isset($field['class']) ? $field['class'] : false;
-                            $field['choices']       = isset($field['choices']) ? $field['choices'] : false;
-                            $field['cols']          = isset($field['cols']) ? $field['cols'] : false;
-                            $field['default']       = isset($field['default']) ? $field['default'] : null;
-                            $field['disabled']      = isset($field['disabled']) ? $field['disabled'] : false;
-                            $field['expanded']      = isset($field['expanded']) ? $field['expanded'] : false;
-                            $field['file']          = isset($field['file']) ? $field['file'] : null;
-                            $field['helper']        = isset($field['helper']) ? $field['helper'] : null;
-                            $field['key']           = isset($field['key']) ? $field['key'] : null;
-                            $field['label']         = isset($field['label']) ? $field['label'] : null;
-                            $field['max']           = isset($field['max']) ? $field['max'] : null;
-                            $field['min']           = isset($field['min']) ? $field['min'] : null;
-                            $field['multiple']      = isset($field['multiple']) ? $field['multiple'] : false;
-                            $field['readonly']      = isset($field['readonly']) ? $field['readonly'] : false;
-                            $field['required']      = isset($field['required']) ? $field['required'] : false;
-                            $field['rows']          = isset($field['rows']) ? $field['rows'] : false;
-                            $field['rule']          = isset($field['rule']) ? $field['rule'] : false;
-                            $field['size']          = isset($field['size']) ? $field['size'] : 0;
-                            $field['step']          = isset($field['step']) ? $field['step'] : null;
-                            $field['type']          = isset($field['type']) ? $field['type'] : "text";
-                            $field['error']         = false;
-                            $field['thumbnails']    = false;
-                            // $field['value']     = isset($field['value']) ? $field['value'] : $request[$field['key']];
-                            // $field['ID'] = isset($field['ID']) ? $field['ID'] : false;
-                            // $field['section'] = isset($field['section']) ? $field['section'] : false;
-    
+                            $field['allowed_types']     = isset($field['allowed_types']) ? $field['allowed_types'] : null;
+                            $field['class']             = isset($field['class']) ? $field['class'] : false;
+                            $field['choices']           = isset($field['choices']) ? $field['choices'] : false;
+                            $field['cols']              = isset($field['cols']) ? $field['cols'] : false;
+                            $field['default']           = isset($field['default']) ? $field['default'] : null;
+                            $field['disabled']          = isset($field['disabled']) ? $field['disabled'] : false;
+                            $field['expanded']          = isset($field['expanded']) ? $field['expanded'] : false;
+                            $field['file']              = isset($field['file']) ? $field['file'] : null;
+                            $field['helper']            = isset($field['helper']) ? $field['helper'] : null;
+                            $field['key']               = isset($field['key']) ? $field['key'] : null;
+                            $field['label']             = isset($field['label']) ? $field['label'] : null;
+                            $field['max']               = isset($field['max']) ? $field['max'] : null;
+                            $field['min']               = isset($field['min']) ? $field['min'] : null;
+                            $field['multiple']          = isset($field['multiple']) ? $field['multiple'] : false;
+                            $field['readonly']          = isset($field['readonly']) ? $field['readonly'] : false;
+                            $field['required']          = isset($field['required']) ? $field['required'] : false;
+                            $field['rows']              = isset($field['rows']) ? $field['rows'] : false;
+                            $field['rule']              = isset($field['rule']) ? $field['rule'] : false;
+                            $field['size']              = isset($field['size']) ? $field['size'] : 0;
+                            $field['step']              = isset($field['step']) ? $field['step'] : null;
+                            $field['type']              = isset($field['type']) ? $field['type'] : "text";
+                            $field['error']             = false;
+                            $field['thumbnails']        = false;
+
                             // Format data
                             if (!is_array($field['allowed_types']) && null !== $field['allowed_types'])
                             {
@@ -1426,6 +1494,28 @@ if (!class_exists('PPM'))
                                     $field['value'] = $request[$field['key']];
                                     break;
                             }
+
+                            // Custom error message
+                            if (isset($field['error_messages']))
+                            {
+                                if (is_string($field['error_messages']))
+                                {
+                                    $error_messages = array(
+                                        "required"  => __($field['error_messages'], $config->Namespce),
+                                        "email"     => __($field['error_messages'], $config->Namespce),
+                                        "url"       => __($field['error_messages'], $config->Namespce),
+                                        "rule"      => __($field['error_messages'], $config->Namespce)
+                                    );
+                                }
+                                else if (is_array($field['error_messages']))
+                                {
+                                    if (isset($field['error_messages']['required'])) $error_messages['required'] = $field['error_messages']['required'];
+                                    if (isset($field['error_messages']['email'])) $error_messages['email'] = $field['error_messages']['email'];
+                                    if (isset($field['error_messages']['url'])) $error_messages['url'] = $field['error_messages']['url'];
+                                    if (isset($field['error_messages']['rule'])) $error_messages['rule'] = $field['error_messages']['rule'];
+                                }
+                            }
+                            $field['error_messages'] = (object) $error_messages;                            
                             
                             if (!empty($field['key']))
                             {
@@ -1435,10 +1525,6 @@ if (!class_exists('PPM'))
                     }
                 }
             }
-            // else
-            // {
-            //     echo "NOT AN ARRAY\n";
-            // }
 
             return $responses;
         }
@@ -1462,22 +1548,27 @@ if (!class_exists('PPM'))
         public static function validate( $params )
         {
             $config = $params['config'];
+            $post_type = $params['post_type'];
             $responses = $params['responses'];
             $errors = [];
+            $values = [];
             $success = [];
 
             if (!empty($responses) && is_array($responses))
             {
                 foreach ($responses as $response)
                 {
+                    // Values
+                    $values[$response->key] = $response->value;
+
                     // Is Required
                     if ($response->required && empty($response->value))
                     {
                         $response->error = true;
-
+                        
                         $errors[$response->key] = array(
                             "field" => $response->key,
-                            "message" => __("This field is required.", WPPPM_TEXTDOMAIN)
+                            "message" => $response->error_messages->required
                         );
                     }
                     
@@ -1488,7 +1579,7 @@ if (!class_exists('PPM'))
 
                         $errors[$response->key] = array(
                             "field" => $response->key,
-                            "message" => __("This field is not a valid email address.", WPPPM_TEXTDOMAIN)
+                            "message" => $response->error_messages->email
                         );
                     }
                     
@@ -1499,7 +1590,7 @@ if (!class_exists('PPM'))
 
                         $errors[$response->key] = array(
                             "field" => $response->key,
-                            "message" => __("This field is not a valid url.", WPPPM_TEXTDOMAIN)
+                            "message" => $response->error_messages->url
                         );
                     }
                     
@@ -1522,25 +1613,27 @@ if (!class_exists('PPM'))
 
                         $errors[$response->key] = array(
                             "field" => $response->key,
-                            "message" => __("This field is not valid.", WPPPM_TEXTDOMAIN)
+                            "message" => $response->error_messages->rule
                         );
                     }
 
                     else
                     {
-                        $success[$response->key] = array(
-                            "field" => $response->key,
-                            "value" => $response->value
-                        );
+                        array_push($success, $response->key);
                     }
                 }
             }
 
-            return (object) array(
+            $_SESSION[$post_type] = array(
+                // If the submit has no error, we send $value as an empty array
+                // to prevent to show data in form
+                "values" => !empty($errors) ? $values : [],
                 "errors" => $errors,
                 "success" => $success,
-                "isValide" => empty($errors)
+                "isValid" => empty($errors)
             );
+
+            return (object) $_SESSION[$post_type];
         }
 
         public static function validate_file( $field )

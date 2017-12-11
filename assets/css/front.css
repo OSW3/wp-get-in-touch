@@ -1,0 +1,24 @@
+
+input[type=text].has-error,
+input[type=email].has-error,
+input[type=url].has-error,
+input[type=number].has-error,
+input[type=date].has-error,
+input[type=time].has-error,
+input[type=tel].has-error,
+select.has-error,
+textarea.has-error
+{
+    border-color: #b60000;
+}
+
+.notice.has-error
+{
+    color: #b60000;
+    font-weight: 600;
+}
+
+.required-symbol
+{
+    color: #e40000 !important;
+}

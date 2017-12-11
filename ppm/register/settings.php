@@ -256,6 +256,7 @@ if (!class_exists('PPM_RegisterSettings'))
                 // check response validation
                 $validate = PPM::validate([
                     "config" => $this->config,
+                    // "post_type" => $post_type,
                     "responses" => $responses
                 ]);
 
@@ -283,7 +284,7 @@ if (!class_exists('PPM_RegisterSettings'))
                 }
 
                 // Update database ...
-                if (true === $validate->isValide)
+                if (true === $validate->isValid)
                 {
                     $responses = array_merge(
                         $this->config->Options, 

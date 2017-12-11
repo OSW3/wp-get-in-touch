@@ -31,7 +31,6 @@ if (!function_exists('GetInTouch_Submission'))
         // Define the post type
         // config.registers.posts[x].type
         $post_type = 'get_in_touch';
-        // $errors = [];
 
         // Make shure we are on Front side only
         if (!is_admin())
@@ -60,29 +59,26 @@ if (!function_exists('GetInTouch_Submission'))
                 // check response validation
                 $validate = PPM::validate([
                     "config" => $config,
+                    "post_type" => $post_type,
                     "responses" => $responses
                 ]);
+
                 
-                if ($validate->isValide)
+                if ($validate->isValid)
                 {
                     $post_id = wp_insert_post([
                         'post_title'    => wp_strip_all_tags( $responses['name']->value ),
                         'post_content'  => $responses['message']->value,
                         'post_type'     => $post_type,
-                        'post_status'   => 'publish'
+                        'post_status'   => 'private',
+                        'comment_status' => 'closed',
+                        'ping_status' => 'closed', 
                     ]); 
                     update_post_meta( $post_id, "name", $responses['name']->value );
                     update_post_meta( $post_id, "email", $responses['email']->value );
                     update_post_meta( $post_id, "phone", $responses['phone']->value );
                     update_post_meta( $post_id, "message", $responses['message']->value );
                     update_post_meta( $post_id, "isRead", "0" );
-
-                }
-                else
-                {
-                    // $errors = $validate->errors;
-                    $_SESSION[$post_type]['success'] = $validate->success;
-                    $_SESSION[$post_type]['errors'] = $validate->errors;
                 }
             }        
         }

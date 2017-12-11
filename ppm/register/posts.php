@@ -10,6 +10,7 @@ if (!class_exists('PPM_RegisterPosts'))
         private $type;
         private $available_capability_type = ['post', 'page'];
         private $available_ep_mask = ["EP_NONE", "EP_PERMALINK", "EP_ATTACHMENT", "EP_DATE", "EP_YEAR", "EP_MONTH", "EP_DAY", "EP_ROOT", "EP_COMMENTS", "EP_SEARCH", "EP_CATEGORIES", "EP_TAGS", "EP_AUTHORS", "EP_PAGES", "EP_ALL_ARCHIVES", "EP_ALL"];
+        private $posts_type = [];
 
         /**
          * Constructor
@@ -258,17 +259,17 @@ if (!class_exists('PPM_RegisterPosts'))
                 
                 // Capabilities
                 // TODO: Revoir cette  // Droits d'actions
-                // if (!isset($post->capabilities))
-                // {
-                //     $post->capabilities = [];
-                // }
-                // array_push($post->capabilities, [$post->capability_type, $post->capability_type."s"]);
+                if (!isset($post->capabilities))
+                {
+                    $post->capabilities = [];
+                }
+                array_merge($post->capabilities, [$post->capability_type => $post->capability_type."s"]);
                 
                 // Map Meta Cap
-                // if (!isset($post->map_meta_cap) || $post->map_meta_cap !== true)
-                // {
-                //     $post->map_meta_cap = false;
-                // }
+                if (!isset($post->map_meta_cap) || $post->map_meta_cap !== true)
+                {
+                    $post->map_meta_cap = false;
+                }
                 
                 
                 // Supports
@@ -294,9 +295,20 @@ if (!class_exists('PPM_RegisterPosts'))
                 
                 
                 // Labels
-                // TODO: Value can be false to remove links
                 if (isset($post->labels) && is_array($post->labels))
                 {
+                    // All items
+                    if (is_bool($post->labels['all_items']) && false === $post->labels['all_items'])
+                    {
+                        add_action('admin_menu', [$this, 'remove_admin_menu_all_items']);
+                    }
+
+                    // Add New
+                    if (is_bool($post->labels['add_new']) && false === $post->labels['add_new'])
+                    {
+                        add_action('admin_menu', [$this, 'remove_admin_menu_add_new']);
+                    }
+
                     // Force to delete entry
                     $post->labels['name'] = null;
                     $post->labels['menu_name'] = null;
@@ -325,6 +337,8 @@ if (!class_exists('PPM_RegisterPosts'))
                 }
                 
                 
+                
+                
                 // Post has archive
                 if (!isset($post->has_archive) || $post->has_archive !== true)
                 {
@@ -335,9 +349,10 @@ if (!class_exists('PPM_RegisterPosts'))
                 // Rewrite
                 if (!isset($post->rewrite))
                 {
-                    $post->rewrite = ["slug" => $post->type];
+                    $post->rewrite = true;
                 }
-                else 
+
+                if (is_array($post->rewrite))
                 {
                     // Slug
                     $post->rewrite['slug'] = PPM::tryToDo( $post->rewrite['slug'] );
@@ -382,7 +397,7 @@ if (!class_exists('PPM_RegisterPosts'))
                 // Delete Post with user delation
                 if (!isset($post->delete_with_user) || !is_bool($post->delete_with_user))
                 {
-                    $post->delete_with_user = null;
+                    $post->delete_with_user = false;
                 }
                 
                 
@@ -423,25 +438,25 @@ if (!class_exists('PPM_RegisterPosts'))
                 }
 
 
-                // Add Post Category
-                if (isset($post->category))
+                // Add Post Categories
+                if (isset($post->categories))
                 {
-                    $post->category['hierarchical'] = true;
-                    $post->category = $this->add_taxonomy(
-                        "cat_", 
-                        $post->category, 
+                    $post->categories['hierarchical'] = true;
+                    $post->categories = $this->add_taxonomy(
+                        "cats_", 
+                        $post->categories, 
                         $post
                     );
                 }
 
 
                 // Add Post Tag
-                if (isset($post->tag))
+                if (isset($post->tags))
                 {
-                    $post->tag['hierarchical'] = false;
-                    $post->tag = $this->add_taxonomy(
-                        "tag_", 
-                        $post->tag, 
+                    $post->tags['hierarchical'] = false;
+                    $post->tags = $this->add_taxonomy(
+                        "tags_", 
+                        $post->tags, 
                         $post
                     );
                 }
@@ -495,9 +510,6 @@ if (!class_exists('PPM_RegisterPosts'))
                         }      
                     }
                 }
-
-
-
             }
         }
 
@@ -514,40 +526,43 @@ if (!class_exists('PPM_RegisterPosts'))
                     {
                         foreach ($schema['schema'] as $field)
                         {
-                            if (isset($field['key']) && $field['key'] === $key && false !== $field['shortcode'])
+                            if (isset($field['type']) && !empty($field['type']))
                             {
-                                foreach ($attrs as $attr_key => $attr_value)
+                                if (isset($field['key']) && $field['key'] === $key && false !== $field['shortcode'])
                                 {
-                                    // Boolean value
-                                    if (in_array(strtolower($attr_value), ["true", "yes", "y", "on", "1"]))
+                                    foreach ($attrs as $attr_key => $attr_value)
                                     {
-                                        $attrs[$attr_key] = true;
+                                        // Boolean value
+                                        if (in_array(strtolower($attr_value), ["true", "yes", "y", "on", "1"]))
+                                        {
+                                            $attrs[$attr_key] = true;
+                                        }
+                                        else if (in_array(strtolower($attr_value), ["false", "non", "n", "off", "0"]))
+                                        {
+                                            $attrs[$attr_key] = false;
+                                        }
                                     }
-                                    else if (in_array(strtolower($attr_value), ["false", "non", "n", "off", "0"]))
-                                    {
-                                        $attrs[$attr_key] = false;
-                                    }
+                                    
+                                    $field = (object) array_merge( $field, $attrs );
+    
+                                    require_once $this->config->Path.'ppm/form/form.php';
+                                    require_once $this->config->Path.'ppm/form/'.$field->type.'.php';
+                                    
+                                    $classType = ucfirst(strtolower($field->type));
+                                    $classType = "PPM_".$classType."Type";
+    
+                                    $formType = new $classType([
+                                        "config"            => $this->config,
+                                        "attributes"        => $field, 
+                                        "addLabelTag"       => is_bool($field->label) ? $field->label : true,
+                                        "addWrapper"        => false, 
+                                        "attrNameAsArray"   => false,
+                                        "schemaID"          => "CustomPosts",
+                                        "errors"            => isset($_SESSION[$posttype]['errors']) ? $_SESSION[$posttype]['errors'] : []
+                                    ]);
+    
+                                    return $formType->render();
                                 }
-                                
-                                $field = (object) array_merge( $field, $attrs );
-
-                                require_once $this->config->Path.'ppm/form/form.php';
-                                require_once $this->config->Path.'ppm/form/'.$field->type.'.php';
-                                
-                                $classType = ucfirst(strtolower($field->type));
-                                $classType = "PPM_".$classType."Type";
-
-                                $formType = new $classType([
-                                    "config"            => $this->config,
-                                    "attributes"        => $field, 
-                                    "addLabelTag"       => is_bool($field->label) ? $field->label : true,
-                                    "addWrapper"        => false, 
-                                    "attrNameAsArray"   => false,
-                                    "schemaID"          => "CustomPosts",
-                                    "errors"            => $_SESSION[$posttype]['errors']
-                                ]);
-
-                                return $formType->render();
                             }
                         }
                     }
@@ -806,6 +821,52 @@ if (!class_exists('PPM_RegisterPosts'))
             }
             return $actions;
         }
+
+        public function remove_admin_menu_all_items()
+        {
+            $this->remove_admin_from_menu('all_items');
+        }
+
+        public function remove_admin_menu_add_new()
+        {
+            $this->remove_admin_from_menu('add_new');
+        }
+
+        private function remove_admin_from_menu( $item )
+        {
+            $links = array(
+                "all_items" => "edit.php?post_type=",
+                "add_new" => "post-new.php?post_type=",
+            );
+
+            $settings = $this->getPostsSettings();
+
+            // print_r( $GLOBALS['submenu'] );
+
+            foreach ($settings as $key => $post)
+            {
+                $post = (object) $post;
+                if (isset($post->labels) && is_array($post->labels))
+                {
+                    foreach ($post->labels as $label_key => $label_value)
+                    {
+                        if ($item === $label_key && isset($links[$item]))
+                        {
+                            if (isset($GLOBALS['submenu']['edit.php?post_type='.$post->type]))
+                            {
+                                foreach ($GLOBALS['submenu']['edit.php?post_type='.$post->type] as $key => $entry)
+                                {
+                                    if (isset($entry[2]) && $entry[2] === $links[$item].$post->type)
+                                    {
+                                        unset($GLOBALS['submenu']['edit.php?post_type='.$post->type][$key]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
 
         /**
@@ -836,54 +897,50 @@ if (!class_exists('PPM_RegisterPosts'))
                 $type = $_REQUEST['post_type'];
                 $schema = $this->getPostsSchemas();
 
-                // if (is_array($schema[$type]))
-                // {
-                    // Format responses
-                    $responses = PPM::responses([
-                        "config" => $this->config,
-                        "schema" => $schema[$type]
-                    ]);
+                // Format responses
+                $responses = PPM::responses([
+                    "config" => $this->config,
+                    "schema" => $schema[$type]
+                ]);
 
-                    if (!empty($responses))
+                if (!empty($responses))
+                {
+                    // check response validation
+                    $validate = PPM::validate([
+                        "config" => $this->config,
+                        "post_type" => $type,
+                        "responses" => $responses
+                    ]);
+    
+                    if (!$validate->isValid)
                     {
-                        // check response validation
-                        $validate = PPM::validate([
-                            "config" => $this->config,
-                            "responses" => $responses
-                        ]);
-                        
-        
-                        if (!$validate->isValide)
+                        $this->errors = $validate->errors;
+                    }
+    
+                    foreach ($responses as $key => $response)
+                    {
+                        if (!isset($this->errors[$key]))
                         {
-                            $this->errors = $validate->errors;
-                        }
-        
-                        foreach ($responses as $key => $response)
-                        {
-                            if (!isset($this->errors[$key]))
+                            // Save File
+                            if ('file' === $response->type)
                             {
-                                // Save File
-                                if ('file' === $response->type)
+                                if (!empty($response->files)) // Prevent to remove the previous image
                                 {
-                                    if (!empty($response->files)) // Prevent to remove the previous image
-                                    {
-                                        $uploads = PPM::upload( $response, $pid, $this->config );
-                                        update_post_meta($pid, $key, $uploads); 
-                                    }
-                                }
-                                
-                                // Save data in wp_postmeta
-                                else
-                                {
-                                    update_post_meta($pid, $key, $response->value);
+                                    $uploads = PPM::upload( $response, $pid, $this->config );
+                                    update_post_meta($pid, $key, $uploads); 
                                 }
                             }
+                            
+                            // Save data in wp_postmeta
+                            else
+                            {
+                                update_post_meta($pid, $key, $response->value);
+                            }
                         }
-        
-                        $_SESSION[$type]['errors'] = $this->errors;
                     }
-                    
-                // }
+    
+                    $_SESSION[$type]['errors'] = $this->errors;
+                }
             }
         }
     }

@@ -1,9 +1,16 @@
 {
-
-    "_options": {
-        "option_name": "Option value"
+    "assets": {
+        "styles": [{
+            "name": "get-in-touch-style",
+            "path": "front"
+        }]
     },
-
+    "assets_admin": {
+        "styles": [{
+            "name": "get-in-touch-style",
+            "path": "admin"
+        }]
+    },
     "register": {
 
         "settings": {
@@ -14,7 +21,7 @@
                 "icon": "image:ppm.png"
             },
 
-            "schema": [{
+            "sections": [{
                 "title": "Notifications",
                 "description": "Define the list of people who will receive a notification to each message sent from your website.",
                 "schema": [{
@@ -36,26 +43,26 @@
                     "helper": "List of recipients of new message notifications.",
                     "default": "[[admin_email]]"
                 }]
-            }
-            ,
-            {
-                "title": "__ Réponse expéditeur",
-                "description": "__ Envoyer une réponse automatique à l'expéditeur.",
+            },{
+                "title": "Automatic copy",
+                "description": "Send an automatic copy to the sender.",
                 "schema": [{
                     "key": "send_copy",
-                    "label": "__ Activer l'envois de la réponse",
+                    "label": "Enable the sending of the copy",
                     "type": "checkbox",
                     "default": "off"
                 },{
                     "key": "copy_subject",
-                    "label": "__ Copy subject",
+                    "label": "Message subject",
                     "type": "text",
-                    "default": "Votre message envoyé depuis [[blogname]]"
+                    "helper": "Define the subject of the copy email.",
+                    "default": "Your message sent from [[blogname]]"
                 },{
                     "key": "demo_email",
-                    "label": "__ Formater le corps de la réponse",
+                    "label": "Body of the copy message",
                     "type": "textarea",
-                    "default": "Merci pour votre message envoyé depuis notre site [[blogname]].\n\nNous traitons votre demande dans les plus bref délais."
+                    "helper": "Format the body of the copy.",
+                    "default": "Thank you for your message sent from our site [[blogname]].\n\nWe process your request as soon as possible."
                 }]
             }]
         },
@@ -65,17 +72,17 @@
             "label": "Messages",
             "menu_icon": "dashicons-email",
             "capabilities": {
+                "publish_posts": false,
                 "create_posts": "do_not_allow"
             },
             "map_meta_cap": true,
             
-            "_supports": ["title", "editor"],
-            "show_admin_permalink": false,
+            // "show_admin_permalink": false,
 
 
             "labels": {
                 "all_items": "All messages",
-                "not_found": "__ No message",
+                "not_found": "There is no new message.",
                 "edit_item": "Message"
             },
 
@@ -87,11 +94,11 @@
             },
             
             "admin_columns": [{
-                "label": "__ Is Read",
+                "label": "Is Read",
                 "data": "isRead",
                 "sortable": true
             },{
-                "label": "__ Email address",
+                "label": "Email address",
                 "data": "email",
                 "sortable": true
             },{
@@ -110,24 +117,23 @@
                 "title": "__ Sender",
                 "schema": [{
                     "key": "name",
-                    "label": "__ Nom de l'expéditeur",
+                    "label": "Firstname / Lastname",
                     "type": "text",
-                    "placeholder": "__ Prénom / Nom *.",
+                    "placeholder": "Firstname / Lastname",
                     "required": true,
-                    "disabled": true,
-                    "_shortcode": false
+                    "disabled": true
                 },{
                     "key": "email",
-                    "label": "__ Adresse e-mail",
-                    "type": "text",
-                    "placeholder": "__ Adresse e-mail *",
+                    "label": "Email address",
+                    "type": "email",
+                    "placeholder": "Email address",
                     "required": true,
                     "disabled": true
                 },{
                     "key": "phone",
-                    "label": "__ Numéro de téléphone",
+                    "label": "Phone number",
                     "type": "text",
-                    "placeholder": "__ Téléphone *.",
+                    "placeholder": "Phone number",
                     "required": true,
                     "disabled": true
                 },{
@@ -137,12 +143,12 @@
                     "disabled": true
                 }]
             },{
-                "title": "__ Message",
+                "title": "Message",
                 "schema": [{
                     "key": "message",
-                    "label": "__ Message",
+                    "label": "Message",
                     "type": "textarea",
-                    "placeholder": "__ Message *",
+                    "placeholder": "Message",
                     "required": true,
                     "disabled": true
                 }]

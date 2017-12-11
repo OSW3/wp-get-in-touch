@@ -1,0 +1,36 @@
+
+/* Get In Touch - Dashboard Widget */
+
+.widget-get-in-touch .item-header
+{
+    margin-bottom: 8px;
+}
+.widget-get-in-touch .item-header .sender
+{
+    font-weight: 600;
+    display: block;
+    display: table-row;
+    float: left;
+    max-width: 59%;
+}
+.widget-get-in-touch .item-header .date
+{
+    float: right;
+    color: #72777c;
+}
+
+.widget-get-in-touch .item-content
+{
+    line-height: 20px;
+    max-height: 40px;
+    overflow: hidden;
+}
+.widget-get-in-touch .item-content a
+{
+    display: block;
+    color: #72777c;
+}
+.widget-get-in-touch .item-content a:hover
+{
+    color: #2f3236;
+}

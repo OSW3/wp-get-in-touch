@@ -13,6 +13,9 @@ msgstr ""
 "Last-Translator: \n"
 
 
+# ------------------------------------------------------------------------------
+
+
 #: Menu Label / Title
 msgid "Messages"
 msgstr "Messages"
@@ -26,6 +29,33 @@ msgid "All messages"
 msgstr "Tous les messages"
 
 
+# ------------------------------------------------------------------------------
+
+
+#: Custom Posts : Empty list
+msgid "There is no new message."
+msgstr "Il n'y à aucun nouveau message."
+
+#: Custom Posts : Column : Is Read
+msgid "Is Read"
+msgstr "Lu"
+
+#: Custom Posts : Column : Sender Name
+msgid "Firstname / Lastname"
+msgstr "Prénom / Nom"
+
+#: Custom Posts : Column : Email Address
+msgid "Email address"
+msgstr "Adresse E-mail"
+
+#: Custom Posts : Column : Phone number
+msgid "Phone number"
+msgstr "Numéro de téléphone"
+
+
+# ------------------------------------------------------------------------------
+
+# Section 1
 
 #: Settings : Section 1 (Notification) : Title
 msgid "Notifications"
@@ -68,3 +98,49 @@ msgstr "Destinataires des notifications"
 #: Settings : Section 1 (Notification) : Subject helper
 msgid "List of recipients of new message notifications."
 msgstr "Liste des destinataires des notifications de nouveau message."
+
+
+
+# Section 2
+
+#: Settings : Section 2 (Auto reply) : Title
+msgid "Automatic copy"
+msgstr "Copie automatique"
+
+#: Settings : Section 2 (Auto reply) : Description
+msgid "Send an automatic copy to the sender."
+msgstr "Envoyer une copie automatique à l'expéditeur."
+
+
+
+#: Settings : Section 2 (Auto reply) : Activate label
+msgid "Enable the sending of the copy"
+msgstr "Activer l'envois de la copie"
+
+
+
+#: Settings : Section 2 (Auto reply) : Subject label
+msgid "Message subject"
+msgstr "Sujet du message"
+
+#: Settings : Section 2 (Auto reply) : Subject helper
+msgid "Define the subject of the copy email."
+msgstr "Définir le sujet de l'email de copie."
+
+#: Settings : Section 2 (Auto reply) : Subject default
+msgid "Your message sent from [[blogname]]"
+msgstr "Votre message envoyé depuis [[blogname]]"
+
+
+
+#: Settings : Section 2 (Auto reply) : Body label
+msgid "Body of the copy message"
+msgstr "Corps du message de copie"
+
+#: Settings : Section 2 (Auto reply) : Body helper
+msgid "Format the body of the copy."
+msgstr "Formater le corps de la copie."
+
+#: Settings : Section 2 (Auto reply) : Body default
+msgid "Thank you for your message sent from our site [[blogname]].\n\nWe process your request as soon as possible."
+msgstr "Merci pour votre message envoyé depuis notre site [[blogname]].\n\nNous traitons votre demande dans les plus bref délais."

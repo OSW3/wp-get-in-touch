@@ -30,3 +30,12 @@ if (!function_exists('GetInTouch_GetNewMessages'))
         ]);
     }
 }
+
+// add_action('admin_head', 'hidePreviewButtonSaAdmin');
+// function hidePreviewButtonSaAdmin() {
+//   echo '<style>
+//   #postbox-container-1 {
+//             display:none !important;
+//         }               
+//       </style>';
+// }

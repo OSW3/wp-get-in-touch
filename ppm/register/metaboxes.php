@@ -86,8 +86,6 @@ if (!class_exists('PPM_RegisterMetaboxes'))
                         if (file_exists($metabox_view_file))
                         {
 
-                            // print_r( $this->config->Namespace );
-
                             add_meta_box(
                                 "metabox_".$type, 
                                 __($post['label'], $this->config->Namespace), 

@@ -5,7 +5,8 @@
 {
     margin-bottom: 8px;
 }
-.widget-get-in-touch .item-header .sender
+.widget-get-in-touch .item-header .sender,
+#metabox_get_in_touch .item-header .sender
 {
     font-weight: 600;
     display: block;
@@ -13,7 +14,8 @@
     float: left;
     max-width: 59%;
 }
-.widget-get-in-touch .item-header .date
+.widget-get-in-touch .item-header .date,
+#metabox_get_in_touch .item-header .date
 {
     float: right;
     color: #72777c;
@@ -33,4 +35,11 @@
 .widget-get-in-touch .item-content a:hover
 {
     color: #2f3236;
+}
+
+
+#metabox_get_in_touch h2.hndle,
+#metabox_get_in_touch .handlediv
+{
+    display: none !important;
 }

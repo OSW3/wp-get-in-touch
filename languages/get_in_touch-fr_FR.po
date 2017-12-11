@@ -63,7 +63,7 @@ msgstr "Notifications"
 
 #: Settings : Section 1 (Notification) : Description
 msgid "Define the list of people who will receive a notification to each message sent from your website."
-msgstr "Définir la liste des personnes qui recevront une notification à chaque message envoyés depuis votre site."
+msgstr "Définir la liste des personnes qui recevront une notification à chaque message envoyés depuis votre site.<br><br>Liste des variables : "
 
 
 
@@ -125,7 +125,7 @@ msgstr "Sujet du message"
 
 #: Settings : Section 2 (Auto reply) : Subject helper
 msgid "Define the subject of the copy email."
-msgstr "Définir le sujet de l'email de copie."
+msgstr "Définir l'objet de l'email de copie."
 
 #: Settings : Section 2 (Auto reply) : Subject default
 msgid "Your message sent from [[blogname]]"

@@ -1129,6 +1129,32 @@ if (!class_exists('PPM'))
         }
 
         /**
+         * Format & translate the datetime
+         *
+         * @param [string] $format
+         * @param [string] $datetime
+         * @return void
+         */
+        public static function date( $format, $datetime )
+        {
+            $datetime = new DateTime($datetime);
+            $output = [];
+
+            for ($i=0; $i<strlen($format); $i++)
+            {
+                $prev_char = isset($format[$i-1]) ? $format[$i-1] : null;
+                $curr_char = $format[$i];
+
+                if ($curr_char == "\\") continue;
+                if ($prev_char == "\\") $curr_char = "\\".$curr_char;
+
+                array_push($output, __($datetime->format($curr_char)));
+            }
+
+            return implode(null, $output);
+        }
+
+        /**
          * Load Functions
          * Check if the plugin have the functions files and include there
          */

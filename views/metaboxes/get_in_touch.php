@@ -9,18 +9,9 @@ update_post_meta($post_ID, "isRead", "1");
 
 // Is read
 $isRead = get_post_meta($post_ID, 'isRead', true);
-if (1 != $isRead)
-{
-    $isRead = "Non lu";
-}
-else
-{
-    $isRead = "Lu";
-}
 
 // Message date
-$message_date = new DateTime($wp_post->post_date);
-$message_date = $message_date->format("d-m-Y à H \h i \m\i\\n");
+$message_date = PPM::date("l d F Y à H \h i \m\i\\n", $wp_post->post_date);
 
 // Message sender
 $message_sender_name = get_post_meta($post_ID, 'name', true);
@@ -29,33 +20,30 @@ $message_sender_phone = get_post_meta($post_ID, 'phone', true);
 
 // Message 
 $message_content = get_post_meta($post_ID, 'message', true);
-
-
-if (isset($_SESSION[$this->type])) unset($_SESSION[$this->type]);
 ?>
 
 
-<!-- Message Date -->
-<div>
-    <strong><?= __("__ Date", $this->config->Namespace) ?></strong> : <?= $message_date ?>
-    <hr>
+
+<div class="item-header wp-clearfix">
+    <div class="sender">
+        <i class="dashicons dashicons-admin-users"></i> <?= $message_sender_name ?> 
+        <?php if (!empty(message_sender_email)): ?><small>(<?= $message_sender_email ?>)</small><?php endif; ?>
+    </div>
+    <div class="date">
+        <?= $message_date ?>
+    </div>
 </div>
 
-<!-- Message Sender -->
+<hr>
+
 <div>
-    <strong><?= __("__ Expéditeur", $this->config->Namespace) ?></strong> : <?= $message_sender_name ?> 
-    <?php if (!empty(message_sender_email)): ?>
-    <small>(<?= $message_sender_email ?>)</small>
-    <?php endif; ?>
-    <hr>
+    <i class="dashicons dashicons-phone"></i> <?= $message_sender_phone ?> 
 </div>
-<div>
-    <strong><?= __("__ Phone", $this->config->Namespace) ?></strong> : <?= $message_sender_phone ?> 
-    <hr>
-</div>
+
+<hr>
 
 <!-- Message -->
 <div>
-    <strong><?= __("__ Message", $this->config->Namespace) ?></strong> : <br>
-    <?= $message_content ?> 
+    <i class="dashicons dashicons-email"></i> <?= nl2br($message_content) ?> 
 </div>
+

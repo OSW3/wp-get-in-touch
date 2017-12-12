@@ -1009,7 +1009,7 @@ if (!class_exists('PPM_FormType'))
                                 }
                                 
                                 $html.= "<option value=\"".$value[$key]['value']."\"".$selected.">";
-                                $html.= $value[$key]['label'];
+                                $html.= __($value[$key]['label'], $this->config->Namespace);
                                 $html.= "</option>";
                             break;
 
@@ -1043,7 +1043,7 @@ if (!class_exists('PPM_FormType'))
                                 $this->getAttrReadonly(),
                                 $this->getAttrChecked(),
                             ]));
-                            $html.= $value[$key]['label'];
+                            $html.= __($value[$key]['label'], $this->config->Namespace);
                             $html.= "</label>\n";
                             break;
 
@@ -1085,14 +1085,14 @@ if (!class_exists('PPM_FormType'))
                                 $this->getAttrReadonly(),
                                 $this->getAttrChecked(),
                             ]));
-                            $html.= $value[$key]['label'];
+                            $html.= __($value[$key]['label'], $this->config->Namespace);
                             $html.= "</label>\n";
                             break;
 
                         default:
                             $selected = $value[$key]['is_selected'] ? " selected" : null;
                             $html.= "<option value=\"".$value[$key]['value']."\"".$selected.">";
-                            $html.= $value[$key]['label'];
+                            $html.= __($value[$key]['label'], $this->config->Namespace);
                             $html.= "</option>";
                             break;
                     }

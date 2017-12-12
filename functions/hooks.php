@@ -40,6 +40,8 @@ if (!function_exists('GetInTouch_Submission'))
                 && isset($_POST[$post_type.'_nonce'])
                 && wp_verify_nonce($_POST[$post_type.'_nonce'], $post_type)
             ) {
+                
+                // -- RETRIEVE AND CONTROL
 
                 // retrieve Plugin config and Custom post Schema
                 $config = (object) apply_filters('get_in_touch', false);

@@ -1316,7 +1316,7 @@ if (!class_exists('PPM'))
             
             foreach ($lines as $key => $line)
             {
-                $lines[$key] = preg_replace("/((!\/\/).*)?(\/\/.*)/", "$1", $line);
+                $lines[$key] = preg_replace("/((!\/\/).*)?(\s\/\/.*)/", "$1", $line);
 
                 if (empty(trim($lines[$key])))
                 {
@@ -1395,7 +1395,8 @@ if (!class_exists('PPM'))
             {
                 $asset_id   = isset($asset['name']) ? $asset['name'] : uniqid();
                 $asset_file = isset($asset['path']) ? $asset['path'] : null;
-                $asset_dep  = [];
+                $asset_dep  = isset($asset['dependencies']) ? $asset['dependencies'] : [];
+                if (!is_array($asset_dep)) $asset_dep = [$asset_dep];
 
                 if (!empty($asset_file))
                 {

@@ -19,7 +19,7 @@ $query = GetInTouch_GetNewMessages();
                     <?= get_post_meta($post->ID, 'name', true) ?> <small>(<?= get_post_meta($post->ID, 'email', true) ?>)</small>
                 </div>
                 <div class="date">
-                    <?= PPM::date("D d M Y H:i", $wp_post->post_date) ?>
+                    <?= PPM::date("D d M Y H:i", $post->post_date) ?>
                 </div>
             </div>
             <div class="item-content">

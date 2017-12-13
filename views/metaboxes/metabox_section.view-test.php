@@ -1,1 +1,0 @@
-Hello, i'm a metabox section view !

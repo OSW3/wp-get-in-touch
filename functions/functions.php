@@ -10,10 +10,11 @@ if ( !function_exists( 'add_action' ) )
 
 if (!function_exists('GetInTouch_GetNewMessages'))
 {
-    function GetInTouch_GetNewMessages()
+    function GetInTouch_GetNewMessages( $posts_per_page = 5 )
     {
         return new WP_Query([
             'post_type' => 'get_in_touch',
+            "posts_per_page" => $posts_per_page,
 
             'meta_query' => [
                 'relation' => 'OR',
@@ -30,12 +31,3 @@ if (!function_exists('GetInTouch_GetNewMessages'))
         ]);
     }
 }
-
-// add_action('admin_head', 'hidePreviewButtonSaAdmin');
-// function hidePreviewButtonSaAdmin() {
-//   echo '<style>
-//   #postbox-container-1 {
-//             display:none !important;
-//         }               
-//       </style>';
-// }

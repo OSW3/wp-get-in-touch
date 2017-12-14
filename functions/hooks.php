@@ -31,6 +31,7 @@ if (!function_exists('GetInTouch_Submission'))
         // Define the post type
         // config.registers.posts[x].type
         $post_type = 'get_in_touch';
+        $options = get_option('get_in_touch');
 
         // Make shure we are on Front side only
         if (!is_admin())
@@ -42,6 +43,7 @@ if (!function_exists('GetInTouch_Submission'))
             ) {
                 
                 // -- RETRIEVE AND CONTROL
+                // --
 
                 // retrieve Plugin config and Custom post Schema
                 $config = (object) apply_filters('get_in_touch', false);
@@ -64,6 +66,10 @@ if (!function_exists('GetInTouch_Submission'))
                     "post_type" => $post_type,
                     "responses" => $responses
                 ]);
+                
+    
+                // -- SAVE DATA
+                // --
 
                 
                 if ($validate->isValid)
@@ -81,6 +87,81 @@ if (!function_exists('GetInTouch_Submission'))
                     update_post_meta( $post_id, "phone", $responses['phone']->value );
                     update_post_meta( $post_id, "message", $responses['message']->value );
                     update_post_meta( $post_id, "isRead", "0" );
+
+                    $post_date = get_post($post_id)->post_date;
+                    
+                    
+                    // -- SEND NOTIFICATION
+                    // --
+
+                    // Header
+                    $headers  = "MIME-Version: 1.0" . "\r\n";
+                    $headers .= "Content-type: text/html; charset=".get_bloginfo('charset')."" . "\r\n";
+                    $headers .= "From: ". get_option('blogname') ." <". get_option('admin_email') .">" . "\r\n";
+
+                    // Subject
+                    $notification_title = $settings['notification_title'];
+                    $notification_title = preg_replace("/\[\[blogname\]\]/", get_option('blogname'), $notification_title);
+
+                    // Message
+                    $notification_body = $options['notification_body'];
+                    $notification_body = preg_replace("/\[\[blogname\]\]/", get_option('blogname'), $notification_body);
+                    $notification_body = preg_replace("/\[\[name\]\]/", $responses['name']->value, $notification_body);
+                    $notification_body = preg_replace("/\[\[email\]\]/", $responses['email']->value, $notification_body);
+                    $notification_body = preg_replace("/\[\[phone\]\]/", $responses['phone']->value, $notification_body);
+                    $notification_body = preg_replace("/\[\[message\]\]/", $responses['message']->value, $notification_body);
+                    $notification_body = preg_replace("/\[\[datetime\]\]/", PPM::date("D d M Y H:i", $post_date), $notification_body);
+                    $notification_body = preg_replace("/\\n/ius", "<br>", $notification_body);
+
+                    // echo "<h2>Notification</h2>";
+                    // echo "<pre>";
+                    // print_r($notification_body);
+                    // echo "</pre>";
+                    // echo "<hr>";
+    
+                    // Send
+                    $to = explode("\n", $options['notification_to']);
+                    foreach ($to as $key => $value) 
+                    {
+                        $to[$key] = preg_replace("/\[\[admin_email\]\]/", get_option('admin_email'), $value);
+                        wp_mail($to[$key], $subject, $body, $headers);
+                        // print_r( $to[$key] );
+                    }
+                    // echo "<hr>";
+                    
+                    
+                    // -- SEND COPY
+                    // --
+
+                    if ($options['send_response'] == "on")
+                    {
+                        // Subject
+                        $response_subject = $options['response_subject'];
+                        $response_subject = preg_replace("/\[\[blogname\]\]/", get_option('blogname'), $response_subject);
+    
+                        // Message
+                        $response_body = $options['response_body'];
+                        $response_body = preg_replace("/\[\[blogname\]\]/", get_option('blogname'), $response_body);
+                        $response_body = preg_replace("/\[\[name\]\]/", $responses['name']->value, $response_body);
+                        $response_body = preg_replace("/\[\[email\]\]/", $responses['email']->value, $response_body);
+                        $response_body = preg_replace("/\[\[phone\]\]/", $responses['phone']->value, $response_body);
+                        $response_body = preg_replace("/\[\[message\]\]/", $responses['message']->value, $response_body);
+                        $response_body = preg_replace("/\[\[datetime\]\]/", date("d-m-Y h:i:s"), $response_body);
+                        $response_body = preg_replace("/\\n/ius", "<br>", $response_body);
+                        
+                        // echo "<h2>Copie</h2>";
+                        // echo "<pre>";
+                        // print_r($response_body);
+                        // echo "</pre>";
+                        // echo "<hr>";
+                        wp_mail($responses['email']->value, $response_subject, $response_body, $headers);
+
+                    }
+
+                    // echo "<pre>";
+                    // print_r( $options );
+                    // echo "</pre>";
+                    // exit;
                 }
             }        
         }

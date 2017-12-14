@@ -47,3 +47,13 @@ $message_content = get_post_meta($post_ID, 'message', true);
     <i class="dashicons dashicons-email"></i> <?= nl2br($message_content) ?> 
 </div>
 
+<?php 
+// Force la suppression de la session
+if (isset($_SESSION['get_in_touch']))
+{
+    if ($_SESSION['get_in_touch']['isValid'] == 1)
+    {
+        unset($_SESSION['get_in_touch']);
+    }
+}
+?>

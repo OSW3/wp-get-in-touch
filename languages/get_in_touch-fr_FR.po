@@ -104,18 +104,18 @@ msgstr "Liste des destinataires des notifications de nouveau message."
 # Section 2
 
 #: Settings : Section 2 (Auto reply) : Title
-msgid "Automatic copy"
-msgstr "Copie automatique"
+msgid "Automatic resonse"
+msgstr "Réponse automatique"
 
 #: Settings : Section 2 (Auto reply) : Description
-msgid "Send an automatic copy to the sender."
-msgstr "Envoyer une copie automatique à l'expéditeur."
+msgid "Send an automatic resonse to the sender."
+msgstr "Envoyer une réponse automatique à l'expéditeur."
 
 
 
 #: Settings : Section 2 (Auto reply) : Activate label
-msgid "Enable the sending of the copy"
-msgstr "Activer l'envois de la copie"
+msgid "Enable the sending of the resonse"
+msgstr "Activer l'envois de la réponse"
 
 
 
@@ -124,8 +124,8 @@ msgid "Message subject"
 msgstr "Sujet du message"
 
 #: Settings : Section 2 (Auto reply) : Subject helper
-msgid "Define the subject of the copy email."
-msgstr "Définir l'objet de l'email de copie."
+msgid "Define the subject of the resonse email."
+msgstr "Définir l'objet de l'email de réponse."
 
 #: Settings : Section 2 (Auto reply) : Subject default
 msgid "Your message sent from [[blogname]]"
@@ -134,12 +134,12 @@ msgstr "Votre message envoyé depuis [[blogname]]"
 
 
 #: Settings : Section 2 (Auto reply) : Body label
-msgid "Body of the copy message"
-msgstr "Corps du message de copie"
+msgid "Body of the resonse message"
+msgstr "Corps du message de réponse"
 
 #: Settings : Section 2 (Auto reply) : Body helper
-msgid "Format the body of the copy."
-msgstr "Formater le corps de la copie."
+msgid "Format the body of the resonse."
+msgstr "Formater le corps de la réponse."
 
 #: Settings : Section 2 (Auto reply) : Body default
 msgid "Thank you for your message sent from our site [[blogname]].\n\nWe process your request as soon as possible."

@@ -16,7 +16,7 @@
         "settings": {
 
             "menus": {
-                "admin": true,
+                "settings": true,
                 "action": true,
                 "icon": "image:ppm.png"
             },
@@ -44,24 +44,24 @@
                     "default": "[[admin_email]]"
                 }]
             },{
-                "title": "Automatic copy",
-                "description": "Send an automatic copy to the sender.",
+                "title": "Automatic response",
+                "description": "Send an automatic response to the sender.",
                 "schema": [{
-                    "key": "send_copy",
-                    "label": "Enable the sending of the copy",
+                    "key": "send_response",
+                    "label": "Enable the sending of the response",
                     "type": "checkbox",
                     "default": "off"
                 },{
-                    "key": "copy_subject",
+                    "key": "response_subject",
                     "label": "Message subject",
                     "type": "text",
-                    "helper": "Define the subject of the copy email.",
+                    "helper": "Define the subject of the response email.",
                     "default": "Your message sent from [[blogname]]"
                 },{
-                    "key": "demo_email",
-                    "label": "Body of the copy message",
+                    "key": "response_body",
+                    "label": "Body of the response message",
                     "type": "textarea",
-                    "helper": "Format the body of the copy.",
+                    "helper": "Format the body of the response.",
                     "default": "Thank you for your message sent from our site [[blogname]].\n\nWe process your request as soon as possible."
                 }]
             }]

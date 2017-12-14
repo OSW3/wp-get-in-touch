@@ -113,21 +113,17 @@ if (!function_exists('GetInTouch_Submission'))
                     $notification_body = preg_replace("/\[\[datetime\]\]/", PPM::date("D d M Y H:i", $post_date), $notification_body);
                     $notification_body = preg_replace("/\\n/ius", "<br>", $notification_body);
 
-                    // echo "<h2>Notification</h2>";
-                    // echo "<pre>";
-                    // print_r($notification_body);
-                    // echo "</pre>";
-                    // echo "<hr>";
-    
                     // Send
                     $to = explode("\n", $options['notification_to']);
                     foreach ($to as $key => $value) 
                     {
                         $to[$key] = preg_replace("/\[\[admin_email\]\]/", get_option('admin_email'), $value);
-                        wp_mail($to[$key], $subject, $body, $headers);
-                        // print_r( $to[$key] );
+                        wp_mail(trim($to[$key]), $subject, $body, $headers);
                     }
-                    // echo "<hr>";
+                    echo "<pre>";
+                    print_r($to);
+                    echo "</pre>";
+                    exit;
                     
                     
                     // -- SEND COPY
@@ -149,19 +145,9 @@ if (!function_exists('GetInTouch_Submission'))
                         $response_body = preg_replace("/\[\[datetime\]\]/", date("d-m-Y h:i:s"), $response_body);
                         $response_body = preg_replace("/\\n/ius", "<br>", $response_body);
                         
-                        // echo "<h2>Copie</h2>";
-                        // echo "<pre>";
-                        // print_r($response_body);
-                        // echo "</pre>";
-                        // echo "<hr>";
                         wp_mail($responses['email']->value, $response_subject, $response_body, $headers);
 
                     }
-
-                    // echo "<pre>";
-                    // print_r( $options );
-                    // echo "</pre>";
-                    // exit;
                 }
             }        
         }

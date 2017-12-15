@@ -27,7 +27,7 @@ $message_content = get_post_meta($post_ID, 'message', true);
 <div class="item-header wp-clearfix">
     <div class="sender">
         <i class="dashicons dashicons-admin-users"></i> <?= $message_sender_name ?> 
-        <?php if (!empty(message_sender_email)): ?><small>(<?= $message_sender_email ?>)</small><?php endif; ?>
+        <?php if (!empty($message_sender_email)): ?><small>(<?= $message_sender_email ?>)</small><?php endif; ?>
     </div>
     <div class="date">
         <?= $message_date ?>

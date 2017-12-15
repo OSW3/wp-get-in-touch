@@ -247,7 +247,7 @@ if (!class_exists('PPM_RegisterMetaboxes'))
                                     ]);
     
                                     // Show preview for files
-                                    if ('file' === $field->type && false !== $field->preview)
+                                    if ('file' === $field->type && (!isset($field->preview) || false !== $field->preview))
                                     {
                                         $value = $formType->getValue();
                                         $output.= $formType->render( $value, true );

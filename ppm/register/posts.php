@@ -878,7 +878,7 @@ if (!class_exists('PPM_RegisterPosts'))
          */
         public function customposts_view()
         {
-            $class_file = $this->config->Path."PPM/register/metaboxes.php";
+            $class_file = $this->config->Path."ppm/register/metaboxes.php";
             $class_name = "PPM_RegisterMetaboxes";
             $class_params = array(
                 "config" => $this->config,

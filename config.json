@@ -71,13 +71,13 @@
             "type": "get_in_touch",
             "label": "Messages",
             "menu_icon": "dashicons-email",
-            // "capabilities": {
-            //     "publish_posts": false,
-            //     "create_posts": "do_not_allow"
-            // },
-            // "map_meta_cap": true,
+            "capabilities": {
+                "publish_posts": false,
+                "create_posts": "do_not_allow"
+            },
+            "map_meta_cap": true,
             
-            // "show_admin_permalink": false,
+            "show_admin_permalink": false,
 
 
             "labels": {
@@ -110,7 +110,7 @@
             }],
             "remove_admin_row_actions": ["view", "quick-edit", "edit"],
             
-            // "view": true,
+            "view": true,
 
             "metas": [{
                 "title": "__ Sender",

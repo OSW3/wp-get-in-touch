@@ -1071,6 +1071,7 @@ if (!class_exists('PPM'))
 
         /**
          * Include Classe, its dependencies & instantiate
+         * 
          * @param (string) $file
          * @param (string) $className
          * @param (string) $params
@@ -1100,6 +1101,7 @@ if (!class_exists('PPM'))
 
                     if (class_exists($className))
                     {
+            
                         if (null === $method)
                         {
                             return new $className( $params );

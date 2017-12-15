@@ -204,7 +204,7 @@ if (!class_exists('PPM_RegisterSettings'))
                                 
                                 
                                 // Prepare field for File Type
-                                if ('file' === $field->type && false !== $field->preview)
+                                if ('file' === $field->type && (!isset($field->preview) || false !== $field->preview))
                                 {
                                     $callback = "echo '". $formType->render( $field->value, true ) ."';";
                                 }
@@ -220,7 +220,7 @@ if (!class_exists('PPM_RegisterSettings'))
                                 add_settings_field( 
                                     $field->key, 
                                     __($field->label, $this->config->Namespace ),
-                                    create_function('', $callback),
+                                    create_function("", $callback),
                                     $this->config->Namespace, 
                                     $section_namespace
                                 );
@@ -325,18 +325,21 @@ if (!class_exists('PPM_RegisterSettings'))
 
                 foreach ($schema[$section_key]['schema'] as $field_key => $field_value) 
                 {
-                    if (!isset($field_value['ID']))
-                        $schema[$section_key]['schema'][$field_key]['ID'] = uniqid();
-                    
-                    $value = null;
-                    
-                    if (isset($field_value['default'])) $value = $field_value['default'];
-                    if (isset($options[$field_value['key']])) $value = $options[$field_value['key']];
-                    
-                    $schema[$section_key]['schema'][$field_key]['value'] = $value;
-                    
-                    if (!isset($field_value['section']))
-                    $schema[$section_key]['schema'][$field_key]['section'] = $schema[$section_key]['ID'];
+                    if (isset($field_value['key']))
+                    {
+                        if (!isset($field_value['ID']))
+                            $schema[$section_key]['schema'][$field_key]['ID'] = uniqid();
+                        
+                        $value = null;
+                        
+                        if (isset($field_value['default'])) $value = $field_value['default'];
+                        if (isset($options[$field_value['key']])) $value = $options[$field_value['key']];
+                        
+                        $schema[$section_key]['schema'][$field_key]['value'] = $value;
+                        
+                        if (!isset($field_value['section']))
+                        $schema[$section_key]['schema'][$field_key]['section'] = $schema[$section_key]['ID'];
+                    }
                 }
             }
             return $schema;

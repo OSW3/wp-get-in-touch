@@ -1497,46 +1497,52 @@ if (!class_exists('PPM'))
                             }
     
                             // Add response to the field params
-                            switch ($field['type'])
+                            if (!$field['disabled'])
                             {
-                                // Define checkbox value to ON or OFF
-                                case 'checkbox':
-                                    $field['value'] = isset($request[$field['key']]) ? "on" : "off";
-                                    break;
-    
-                                // Hash the Password
-                                case 'password':
-                                    $field['value'] = !empty($request[$field['key']]) 
-                                        ? password_hash($request[$field['key']], PASSWORD_DEFAULT) 
-                                        : null;
-                                    break;
-                                    
-                                // Retrieve file data
-                                case 'file':
-                                    if (!empty($files['name'][$field['key']]))
-                                    {
-                                        $field['files'] = [];
-                                        foreach ($files as $key => $file)
+                                switch ($field['type'])
+                                {
+                                    // Define checkbox value to ON or OFF
+                                    case 'checkbox':
+                                        $field['value'] = isset($request[$field['key']]) ? "on" : "off";
+                                        break;
+        
+                                    // Hash the Password
+                                    case 'password':
+                                        $field['value'] = !empty($request[$field['key']]) 
+                                            ? password_hash($request[$field['key']], PASSWORD_DEFAULT) 
+                                            : null;
+                                        break;
+                                        
+                                    // Retrieve file data
+                                    case 'file':
+                                        if (!empty($files['name'][$field['key']]))
                                         {
-                                            if (isset($file[$field['key']]))
+                                            $field['files'] = [];
+                                            foreach ($files as $key => $file)
                                             {
-                                                if (!is_array($file[$field['key']]))
+                                                if (isset($file[$field['key']]))
                                                 {
-                                                    $field['files'][$key] = [$file[$field['key']]];
-                                                }
-                                                else
-                                                {
-                                                    $field['files'][$key] = $file[$field['key']];
+                                                    if (!is_array($file[$field['key']]))
+                                                    {
+                                                        $field['files'][$key] = [$file[$field['key']]];
+                                                    }
+                                                    else
+                                                    {
+                                                        $field['files'][$key] = $file[$field['key']];
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                    break;
-    
-                                // Add value
-                                default:
-                                    $field['value'] = $request[$field['key']];
-                                    break;
+                                        break;
+        
+                                    // Add value
+                                    default:
+                                        if (isset($request[$field['key']]))
+                                        {
+                                            $field['value'] = $request[$field['key']];
+                                        }
+                                        break;
+                                }
                             }
 
                             // Custom error message
@@ -1795,7 +1801,7 @@ if (!class_exists('PPM'))
                 $wp_sizes = ['medium', 'medium_large', 'large'];
                 $register = ($pid != null) ? 'CustomPosts' : 'Settings';
                 $restrictions = $config->ImagesSizes->$register;
-                $posttype = $_REQUEST['post_type'];
+                $posttype = isset($_REQUEST['post_type']) ? $_REQUEST['post_type'] : $config->Prefix."settings";
                 $GLOBALS['preserved_sizes'] = ['thumbnail'];
                 $files = [];
 

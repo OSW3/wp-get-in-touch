@@ -165,7 +165,7 @@ if (!class_exists('PPM_FormType'))
                 {
                     $message = __("This field is not valid.", WPPPM_TEXTDOMAIN);
                 }
-                return "<div class=\"notice has-error\">". $message ."</div>";
+                return "<div class=\"has-error\">". addslashes($message) ."</div>";
             }
             return null;
         }

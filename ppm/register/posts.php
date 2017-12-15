@@ -475,7 +475,7 @@ if (!class_exists('PPM_RegisterPosts'))
 
 
                 // Remove Row Actions on Items list
-                if (true === $post->remove_admin_row_actions || is_array($post->remove_admin_row_actions))
+                if (isset($post->remove_admin_row_actions) && (true === $post->remove_admin_row_actions || is_array($post->remove_admin_row_actions)))
                 {
                     add_filter( 'post_row_actions', array($this, 'remove_admin_row_actions'), 10, 1 );
                 }
@@ -594,11 +594,11 @@ if (!class_exists('PPM_RegisterPosts'))
             
             
             // Taxonomy is public
-            $taxonomy['public'] = (false !== $taxonomy['public']) ? true : false;
+            $taxonomy['public'] = (!isset($taxonomy['public']) || false !== $taxonomy['public']) ? true : false;
             
             
             // Show taxonomy in admin columns
-            $taxonomy['show_admin_column'] = (true === $taxonomy['show_admin_column']) ? true : false;
+            $taxonomy['show_admin_column'] = (!isset($taxonomy['show_admin_column']) || true === $taxonomy['show_admin_column']) ? true : false;
 
 
             // Associated objects

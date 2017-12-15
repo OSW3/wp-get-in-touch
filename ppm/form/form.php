@@ -535,11 +535,16 @@ if (!class_exists('PPM_FormType'))
          */
         private function setValue()
         {
-            $value = get_post_meta(
-                get_post()->ID, 
-                $this->attributes->key, 
-                true
-            );
+            $value = null;
+            
+            if (!empty(get_post()))
+            {
+                $value = get_post_meta(
+                    get_post()->ID, 
+                    $this->attributes->key, 
+                    true
+                );
+            }
 
             if (empty($value))
             {

@@ -81,7 +81,7 @@ if (!class_exists('PPM_RegisterMetaboxes'))
             {
                 if ($type === $post['type'])
                 {
-                    if (true === $post['view'])
+                    if (isset($post['view']) && true === $post['view'])
                     {
                         if (file_exists($metabox_view_file))
                         {
@@ -122,7 +122,7 @@ if (!class_exists('PPM_RegisterMetaboxes'))
                         {
                             if ($add_novalidate)
                             {
-                                if ($settings[$key]['novalidate'] === false)
+                                if (isset($settings[$key]['novalidate']) && $settings[$key]['novalidate'] === false)
                                 {
                                     $add_novalidate = false;
                                 }
@@ -130,7 +130,7 @@ if (!class_exists('PPM_RegisterMetaboxes'))
         
                             if ($show_admin_permalink)
                             {
-                                if ($settings[$key]['show_admin_permalink'] === false)
+                                if (isset($settings[$key]['show_admin_permalink']) && $settings[$key]['show_admin_permalink'] === false)
                                 {
                                     $show_admin_permalink = false;
                                 }
@@ -243,7 +243,7 @@ if (!class_exists('PPM_RegisterMetaboxes'))
                                         "addWrapper"        => true, 
                                         "attrNameAsArray"   => true,
                                         "schemaID"          => "CustomPosts",
-                                        "errors"            => $_SESSION[$type]['errors']
+                                        "errors"            => isset($_SESSION[$type]['errors']) ? $_SESSION[$type]['errors'] : []
                                     ]);
     
                                     // Show preview for files

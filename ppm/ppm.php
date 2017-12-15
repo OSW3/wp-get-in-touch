@@ -1591,8 +1591,11 @@ if (!class_exists('PPM'))
          */
         public static function validate( $params )
         {
+            // echo "<pre>";
+            // print_r($params);
+            // echo "</pre>";
             $config = $params['config'];
-            $post_type = $params['post_type'];
+            $post_type = isset($params['post_type']) ? $params['post_type'] : $config->Prefix."settings";
             $responses = $params['responses'];
             $errors = [];
             $values = [];

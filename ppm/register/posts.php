@@ -301,7 +301,7 @@ if (!class_exists('PPM_RegisterPosts'))
                 if (isset($post->labels) && is_array($post->labels))
                 {
                     // All items
-                    if (is_bool($post->labels['all_items']) && false === $post->labels['all_items'])
+                    if (isset($post->labels['all_items']) && is_bool($post->labels['all_items']) && false === $post->labels['all_items'])
                     {
                         add_action('admin_menu', [$this, 'remove_admin_menu_all_items']);
                     }

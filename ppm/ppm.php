@@ -60,7 +60,10 @@ if (!class_exists('PPM'))
          */
         public function __construct( $directory=null )
         {
-            session_start();
+            if (empty(session_id()))
+            {
+                session_start();
+            }
             
             // Define the plugin path
             $this->setPath( $directory );
@@ -219,13 +222,19 @@ if (!class_exists('PPM'))
 
                 foreach( $config_params as $config_param )
                 {
-                    list($config_param_key, $config_param_value) = explode(": ", $config_param);
-                    $config_param_key   = PPM::slugify($config_param_key, "_");
-                    $config_param_value = trim(preg_replace("/\*\//", null, $config_param_value));
-
-                    if (!empty($config_param_key))
+                    $param = explode(": ", $config_param);
+                    if (isset($param[1])) 
                     {
-                        $config[$config_param_key] = trim($config_param_value);
+                        $config_param_key = $param[0];
+                        $config_param_value = $param[1];
+
+                        $config_param_key   = PPM::slugify($config_param_key, "_");
+                        $config_param_value = trim(preg_replace("/\*\//", null, $config_param_value));
+    
+                        if (!empty($config_param_key))
+                        {
+                            $config[$config_param_key] = trim($config_param_value);
+                        }
                     }
                 }
             }
@@ -347,11 +356,11 @@ if (!class_exists('PPM'))
 
             // Retrieve Thumbnails filters only
             $filters = [];
-            if (is_array($imagesSizes['Settings']['sizes']))
+            if (isset($imagesSizes['Settings']['sizes']) && is_array($imagesSizes['Settings']['sizes']))
             {
                 $filters = array_merge($filters, $imagesSizes['Settings']['sizes']);
             }
-            if (is_array($imagesSizes['CustomPosts']))
+            if (isset($imagesSizes['CustomPosts']) && is_array($imagesSizes['CustomPosts']))
             {
                 foreach ($imagesSizes['CustomPosts'] as $CustomPosts)
                 {
@@ -506,9 +515,11 @@ if (!class_exists('PPM'))
                 ? (object) $this->settings->menus 
                 : (object) [];
 
-            if (true === $menus->admin) array_push($this->menus['locations'], "admin");
-            if (true === $menus->action) array_push($this->menus['locations'], "action");
-            if (true === $menus->settings) array_push($this->menus['locations'], "settings");
+            // var_dump($menus);
+
+            if (isset($menus->admin) && true === $menus->admin) array_push($this->menus['locations'], "admin");
+            if (isset($menus->action) && true === $menus->action) array_push($this->menus['locations'], "action");
+            if (isset($menus->settings) && true === $menus->settings) array_push($this->menus['locations'], "settings");
 
             if (isset($menus->icon))
             {
@@ -1405,18 +1416,24 @@ if (!class_exists('PPM'))
                     if (file_exists($path.$asset_filename))
                     {
                         if ($type === "css") 
+                        {
                             wp_enqueue_style($asset_id, $url.$asset_filename);
-                        
+                        }
                         elseif ($type === "js") 
+                        {
                             wp_enqueue_script($asset_id, $url.$asset_filename, $asset_dep);
+                        }
                     }
                     else if (preg_match("/^http(s)?/i", $asset_file))
                     {
                         if ($type === "css") 
+                        {
                             wp_enqueue_style($asset_id, $asset_file);
-                        
+                        }
                         elseif ($type === "js") 
+                        {
                             wp_enqueue_script($asset_id, $asset_file, $asset_dep);
+                        }
                     }
                 }
             }

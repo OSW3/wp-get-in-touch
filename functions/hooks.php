@@ -153,8 +153,12 @@ if (!function_exists('GetInTouch_Submission'))
         }
 
         // redirect user
-        if ( wp_redirect( $_POST['_wp_http_referer'] ) ) {
-            exit;
+        if (isset($_POST['_wp_http_referer']))
+        {
+            if (wp_redirect( $_POST['_wp_http_referer'] ))
+            {
+                exit;
+            }
         }
     }
 } 

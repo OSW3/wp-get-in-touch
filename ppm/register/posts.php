@@ -177,7 +177,10 @@ if (!class_exists('PPM_RegisterPosts'))
                 
                 
                 // Post is public
-                $post->public = (false !== $post->public) ? true : false;
+                if (!isset($post->public) || false !== $post->public)
+                {
+                    $post->public = true;
+                }
                 
                 
                 // Post is hierarchical
@@ -304,7 +307,7 @@ if (!class_exists('PPM_RegisterPosts'))
                     }
 
                     // Add New
-                    if (is_bool($post->labels['add_new']) && false === $post->labels['add_new'])
+                    if (isset($post->labels['add_new']) && is_bool($post->labels['add_new']) && false === $post->labels['add_new'])
                     {
                         add_action('admin_menu', [$this, 'remove_admin_menu_add_new']);
                     }
@@ -418,7 +421,7 @@ if (!class_exists('PPM_RegisterPosts'))
 
 
                 // Retrieve current page post_type
-                if (null === $_REQUEST['post_type'])
+                if (!isset($_REQUEST['post_type']) || null === $_REQUEST['post_type'])
                 {
                     if (isset($_REQUEST['post']))
                     {
@@ -431,7 +434,7 @@ if (!class_exists('PPM_RegisterPosts'))
                 }
 
                 // Add MetaBoxes to the form
-                if ($post->type === $_REQUEST['post_type'] && isset($schemas[ $post->type ]) && is_admin())
+                if (isset($_REQUEST['post_type']) && ($post->type === $_REQUEST['post_type'] && isset($schemas[ $post->type ]) && is_admin()))
                 {
                     add_action('save_post', array($this, "custompost_submission"));
                     add_action('admin_init', array($this, 'customposts_view'));
@@ -493,7 +496,7 @@ if (!class_exists('PPM_RegisterPosts'))
                         {
                             foreach ($sections as $field)
                             {
-                                if (isset($field['key']) && false !== $field['shortcode'])
+                                if (isset($field['key']) && (!isset($field['shortcode']) || false !== $field['shortcode']))
                                 {
                                     $shortcode_ID = implode(":",array(
                                         $this->config->Namespace,
@@ -528,7 +531,7 @@ if (!class_exists('PPM_RegisterPosts'))
                         {
                             if (isset($field['type']) && !empty($field['type']))
                             {
-                                if (isset($field['key']) && $field['key'] === $key && false !== $field['shortcode'])
+                                if (isset($field['key']) && $field['key'] === $key && (!isset($field['shortcode']) || false !== $field['shortcode']))
                                 {
                                     foreach ($attrs as $attr_key => $attr_value)
                                     {

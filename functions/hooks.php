@@ -74,15 +74,16 @@ if (!function_exists('GetInTouch_Submission'))
                 
                 if ($validate->isValid)
                 {
+                    $senderName = $responses['firstname']->value." ".$responses['lastname']->value;
                     $post_id = wp_insert_post([
-                        'post_title'    => wp_strip_all_tags( $responses['name']->value ),
+                        'post_title'    => wp_strip_all_tags( $senderName ),
                         'post_content'  => $responses['message']->value,
                         'post_type'     => $post_type,
                         'post_status'   => 'private',
-                        'comment_status' => 'closed',
-                        'ping_status' => 'closed', 
+                        'comment_status'=> 'closed',
+                        'ping_status'   => 'closed', 
                     ]); 
-                    update_post_meta( $post_id, "name", $responses['name']->value );
+                    update_post_meta( $post_id, "name", $senderName );
                     update_post_meta( $post_id, "email", $responses['email']->value );
                     update_post_meta( $post_id, "phone", $responses['phone']->value );
                     update_post_meta( $post_id, "message", $responses['message']->value );
@@ -106,7 +107,7 @@ if (!function_exists('GetInTouch_Submission'))
                     // Message
                     $notification_body = $options['notification_body'];
                     $notification_body = preg_replace("/\[\[blogname\]\]/", get_option('blogname'), $notification_body);
-                    $notification_body = preg_replace("/\[\[name\]\]/", $responses['name']->value, $notification_body);
+                    $notification_body = preg_replace("/\[\[name\]\]/", $senderName, $notification_body);
                     $notification_body = preg_replace("/\[\[email\]\]/", $responses['email']->value, $notification_body);
                     $notification_body = preg_replace("/\[\[phone\]\]/", $responses['phone']->value, $notification_body);
                     $notification_body = preg_replace("/\[\[message\]\]/", $responses['message']->value, $notification_body);
@@ -118,12 +119,12 @@ if (!function_exists('GetInTouch_Submission'))
                     foreach ($to as $key => $value) 
                     {
                         $to[$key] = preg_replace("/\[\[admin_email\]\]/", get_option('admin_email'), $value);
-                        wp_mail(trim($to[$key]), $subject, $body, $headers);
+                        wp_mail(trim($to[$key]), $notification_title, $notification_body, $headers);
                     }
-                    echo "<pre>";
-                    print_r($to);
-                    echo "</pre>";
-                    exit;
+                    // echo "<pre>";
+                    // print_r($to);
+                    // echo "</pre>";
+                    // exit;
                     
                     
                     // -- SEND COPY
@@ -138,7 +139,7 @@ if (!function_exists('GetInTouch_Submission'))
                         // Message
                         $response_body = $options['response_body'];
                         $response_body = preg_replace("/\[\[blogname\]\]/", get_option('blogname'), $response_body);
-                        $response_body = preg_replace("/\[\[name\]\]/", $responses['name']->value, $response_body);
+                        $response_body = preg_replace("/\[\[name\]\]/", $senderName, $response_body);
                         $response_body = preg_replace("/\[\[email\]\]/", $responses['email']->value, $response_body);
                         $response_body = preg_replace("/\[\[phone\]\]/", $responses['phone']->value, $response_body);
                         $response_body = preg_replace("/\[\[message\]\]/", $responses['message']->value, $response_body);

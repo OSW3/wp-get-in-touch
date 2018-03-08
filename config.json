@@ -115,31 +115,42 @@
             "metas": [{
                 "title": "__ Sender",
                 "schema": [{
-                    "key": "name",
-                    "label": "Firstname / Lastname",
+                    "key": "firstname",
+                    "label": "Firstname",
                     "type": "text",
-                    "placeholder": "Firstname / Lastname",
+                    "placeholder": "Firstname",
                     "required": true,
-                    "disabled": true
+                    // "disabled": true,
+                    "shortcodes": true
+                },{
+                    "key": "lastname",
+                    "label": "Lastname",
+                    "type": "text",
+                    "placeholder": "Lastname",
+                    "required": true,
+                    // "disabled": true,
+                    "shortcodes": true
                 },{
                     "key": "email",
                     "label": "Email address",
                     "type": "email",
                     "placeholder": "Email address",
                     "required": true,
-                    "disabled": true
+                    // "disabled": true,
+                    "shortcodes": true
                 },{
                     "key": "phone",
                     "label": "Phone number",
                     "type": "text",
                     "placeholder": "Phone number",
                     "required": true,
-                    "disabled": true
+                    // "disabled": true,
+                    "shortcodes": true
                 },{
                     "key": "isRead",
                     "type": "hidden",
-                    "value": 0,
-                    "disabled": true
+                    "value": 0
+                    // "disabled": true
                 }]
             },{
                 "title": "Message",
@@ -149,7 +160,8 @@
                     "type": "textarea",
                     "placeholder": "Message",
                     "required": true,
-                    "disabled": true
+                    // "disabled": true,
+                    "shortcodes": true
                 }]
             }],
 

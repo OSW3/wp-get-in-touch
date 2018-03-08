@@ -533,6 +533,8 @@ if (!class_exists('PPM_RegisterPosts'))
                             {
                                 if (isset($field['key']) && $field['key'] === $key && (!isset($field['shortcode']) || false !== $field['shortcode']))
                                 {
+                                    $attrs = is_array($attrs) ? $attrs : [];
+
                                     foreach ($attrs as $attr_key => $attr_value)
                                     {
                                         // Boolean value
